@@ -1,0 +1,23 @@
+{
+    "name": "lavalite/user",
+    "description": "",
+    "authors": [
+        {
+            "name": "Lava Lite",
+            "email": "info@lavalite.org"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.1.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Lavalite\\User\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
