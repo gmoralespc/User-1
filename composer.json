@@ -1,6 +1,7 @@
 {
     "name": "lavalite/user",
-    "description": "",
+    "description": "User management package for lavalite framework",
+    "keywords": ["lavalite", "user", "laravel", "auth"],
     "authors": [
         {
             "name": "Lava Lite",
