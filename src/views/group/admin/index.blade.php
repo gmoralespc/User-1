@@ -4,7 +4,7 @@
     <div class="col-md-4 col-xs-12 view-breadcrumb">
         <ol class="breadcrumb">
             <li><a href="{{ URL::to('admin') }}"> {{ Lang::get('app.home') }} </a></li>
-            <li class="active">{{ Lang::get('user::group.module.names') }}</li>
+            <li class="active">{{ Lang::get('user::group.names') }}</li>
         </ol>
     </div>
     <div class="col-md-6 col-xs-8 view-search">
@@ -22,7 +22,7 @@
     {{-- Buttons --}}
     <div class="col-md-2 col-xs-4 view-buttons">
         <a class="btn btn-info pull-right {{ ($permissions['create']) ? '' : 'disabled' }} view-btn-create" href="{{ URL::to('admin/user/group/create') }}">
-            <i class="fa fa-plus-circle"></i> {{ Lang::get('app.new') }} {{ Lang::get('user::group.module.name') }}
+            <i class="fa fa-plus-circle"></i> {{ Lang::get('app.new') }} {{ Lang::get('user::group.name') }}
         </a>
     </div>
 </div>

@@ -5,7 +5,7 @@
     <div class="col-md-6 col-xs-12 view-breadcrumb">
         <ol class="breadcrumb">
             <li><a href="{{ URL::to('admin') }}"> {{ Lang::get('app.home') }} </a></li>
-            <li class="active">{{ Lang::get('user::group.module.names') }}</li>
+            <li class="active">{{ Lang::get('user::group.names') }}</li>
         </ol>
     </div>
 
