@@ -53,7 +53,7 @@
 
         </div>
         {{ Form::hidden('id', $group->id) }}
-        {{ Form::submit(trans('user::pages.'.'.actionedit').' '.trans('user::group.group'), array('class' => 'btn btn-primary')) }}
+        {{ Form::submit(trans('app.update').' '.trans('user::group.name'), array('class' => 'btn btn-primary')) }}
 
  {{ Former::close() }}
 </div>

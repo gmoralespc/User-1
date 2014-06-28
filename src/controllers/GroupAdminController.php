@@ -1,5 +1,7 @@
 <?php namespace Lavalite\User\Controllers;
 
+use App;
+use Lang;
 use View;
 use Input;
 use Event;
