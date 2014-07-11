@@ -1,5 +1,7 @@
 <?php namespace Lavalite\User\Models;
 
+use Validator;
+
 use Eloquent;
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
@@ -88,103 +90,19 @@ class User extends \Cartalyst\Sentry\Users\Eloquent\User implements UserInterfac
         return $this->email;
     }
 
-
-    /**
-     * Validates current attributes against rules
-     *
-     * @return bool
-     */
-    public function validate()
+    public function getPersistCode()
     {
-        $validator = Validator::make($this->attributes, static::$rules);
+        if (!$this->persist_code)
+        {
+            $this->persist_code = $this->getRandomString();
 
-        if ($validator->passes()) {
-            return true;
+            // Our code got hashed
+            $persistCode = $this->persist_code;
+
+            $this->save();
+
+            return $persistCode;
         }
-
-        $this->setErrors($validator->messages());
-
-        return false;
+        return $this->persist_code;
     }
-
-    /**
-     * Set error message bag
-     *
-     * @var Illuminate\Support\MessageBag
-     * @return void
-     */
-    protected function setErrors(MessageBag $errors)
-    {
-        $this->errors = $errors;
-    }
-
-    /**
-     * Retrieve error message bag
-     *
-     * @return Illuminate\Support\MessageBag
-     */
-    public function getErrors()
-    {
-        return $this->errors instanceof MessageBag ? $this->errors : new MessageBag;
-    }
-
-    /**
-     * Check if a model has been saved
-     *
-     * @return boolean
-     */
-    public function isSaved()
-    {
-        return $this->errors instanceof MessageBag ? false : true;
-    }
-
-    /**
-     * Create a unique slug
-     *
-     * @param  string $title
-     * @return void
-     */
-    protected function getUniqueSlug($title)
-    {
-        $slug = Str::slug($title);
-
-        $row = DB::table($this->table)->where('slug', $slug)->first();
-
-        if ($row) {
-            $num = 2;
-            while ($row) {
-                $newSlug = $slug .'-'. $num;
-
-                $row = DB::table($this->table)->where('slug', $newSlug)->first();
-                $num++;
-            }
-
-            $slug = $newSlug;
-        }
-
-        return $slug;
-    }
-
-    /**
-     * Create a unique slug
-     *
-     * @param  string $title
-     * @return void
-     */
-    protected function getModule()
-    {
-        return $this->module;
-    }
-
-   /**
-     * Listen for save and updating event
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-    }
-
 }

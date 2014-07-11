@@ -206,7 +206,7 @@ class GroupAdminController extends \AdminController {
             $data['group']          = Sentry::getGroupProvider()->findById($id);
             $data['permissions']    = $data['group']->getPermissions();
             $data['rights']         = $this->userRights();
-    print_r($data['permissions']);
+    
 
         }
         catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)

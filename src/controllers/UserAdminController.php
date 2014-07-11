@@ -533,7 +533,7 @@ class UserAdminController extends \AdminController
             // Success!
             Session::flash('success', $result['message']);
 
-            return Redirect::to('admin/user');
+            return Redirect::to('admin/user/user');
 
         } else {
             Session::flash('error', $result['message']);

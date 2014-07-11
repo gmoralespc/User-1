@@ -10,13 +10,13 @@ Route::group(array('prefix' => Localization::setLocale()), function () {
     });
 
 
-    Route::group(array('before' => 'auth.user'), function () {
-        Route::get('user', 'Lavalite\User\Controllers\PublicController@viewProfile');
-        Route::get('user/profile', 'Lavalite\User\Controllers\PublicController@getProfile');
-        Route::post('user/profile', 'Lavalite\User\Controllers\PublicController@postProfile');
+    Route::group(array('prefix' => 'user', 'before' => 'auth.user'), function () {
+        Route::get('/', 'Lavalite\User\Controllers\PublicController@viewProfile');
+        Route::get('/profile', 'Lavalite\User\Controllers\PublicController@getProfile');
+        Route::post('/profile', 'Lavalite\User\Controllers\PublicController@postProfile');
 
-        Route::get('user/change', 'Lavalite\User\Controllers\PublicController@getChange');
-        Route::post('user/change', 'Lavalite\User\Controllers\PublicController@postChange');
+        Route::get('/change', 'Lavalite\User\Controllers\PublicController@getChange');
+        Route::post('/change', 'Lavalite\User\Controllers\PublicController@postChange');
     });
 
 
