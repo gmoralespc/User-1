@@ -2,6 +2,7 @@
     "name": "lavalite/user",
     "description": "User management package for lavalite framework",
     "keywords": ["lavalite", "user", "laravel", "auth"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Lava Lite",
