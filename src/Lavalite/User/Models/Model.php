@@ -6,8 +6,12 @@ use Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 class Model extends Eloquent
 {
+    use SoftDeletingTrait;
+
+    protected $dates = ['deleted_at']; 
     /**
      * Error message bag
      *

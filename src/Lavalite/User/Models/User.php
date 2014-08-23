@@ -21,7 +21,6 @@ class User extends \Cartalyst\Sentry\Users\Eloquent\User implements UserInterfac
      * @var MessageBag
      */
     public static $rules = array(
-
             'email'                     => 'required|min:4|max:32|email',
             'password'                  => 'required|min:6|confirmed',
             'password_confirmation'     => 'required',

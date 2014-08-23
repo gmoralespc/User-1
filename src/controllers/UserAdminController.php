@@ -73,6 +73,7 @@ class UserAdminController extends \AdminController
     {
         $this->hasAccess();
         $data['permissions']           = $this->permissions();
+        $data['types']                 = Config::get('lavalite.usertypes');
         $data['q']                     = '';
         $data['users']                 = $this->user->paginate($perPage);
 

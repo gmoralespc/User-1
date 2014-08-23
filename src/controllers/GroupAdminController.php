@@ -57,6 +57,7 @@ class GroupAdminController extends \AdminController {
     {
         $this->hasAccess();
         $data['permissions']           = $this->permissions();
+        $data['types']                 = Config::get('lavalite.usertypes');
         $data['q']                     = '';
         // Index - show the user's group details.
         try
@@ -206,7 +207,7 @@ class GroupAdminController extends \AdminController {
             $data['group']          = Sentry::getGroupProvider()->findById($id);
             $data['permissions']    = $data['group']->getPermissions();
             $data['rights']         = $this->userRights();
-    
+
 
         }
         catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
@@ -256,7 +257,6 @@ class GroupAdminController extends \AdminController {
                 // Update the group details
                 $group->name = $input['name'];
                 $group->permissions = Input::get('permissions');
-
                 // Update the group
                 if ($group->save())
                 {

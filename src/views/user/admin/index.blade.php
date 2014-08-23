@@ -1,4 +1,4 @@
-@extends('admin.layouts.index')
+@extends('Admin::views.index')
 @section('heading')
 <h1>
     {{ Lang::get('user::package.name') }}
@@ -41,6 +41,7 @@
     <tr>
         <th>{{ Lang::get('user::user.label.name')}}</th>
         <th>{{ Lang::get('user::user.label.email') }}</th>
+        <th>{{ Lang::get('user::group.label.permissions') }}</th>
         <th>{{ Lang::get('user::user.label.status') }}</th>
         <th width="140">{{ Lang::get('app.options') }}</th>
     </tr>
@@ -48,6 +49,11 @@
     <tr>
     <td>{{ $user->first_name }} {{ $user->last_name }}</td>
     <td><a href="{{ ($permissions['view']) ? (URL::to('admin/user/user') . '/' . $user->id ) : '#' }}">{{ $user->email }}</a></td>
+    <td>
+    @foreach ($types as $type)
+    {{ ($user->hasAccess($type)) ? ' <i class="fa fa-check-square fa-fw"></i> ' . ucfirst($type) : '<i class="fa fa-times fa-fw"></i> ' . ucfirst($type)}}
+    @endforeach
+    </td>
     <td>{{ $userStatus[$user->id] }}</td>
     <td>
         <div class="btn-group  btn-group-xs">

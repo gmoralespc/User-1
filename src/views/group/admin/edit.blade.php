@@ -1,4 +1,4 @@
-@extends('admin.layouts.edit')
+@extends('Admin::views.edit')
 
 @section('heading')
 <h1>
@@ -45,15 +45,19 @@
                         {{ ($errors->has('name') ? $errors->first('name') : '') }}
                     </div>
                 </div>
+
                 <div class="col-md-12 ">
-                    {{ Form::label(trans('user::group.label.permissions')) }}
-                </div>
-                <div class="col-md-12 ">
-                @foreach($rights['default'] as $permission)
-                    <label class="checkbox-inline">
-                        {{ Form::checkbox("permissions[$permission]", 1, array_key_exists($permission, $permissions)) }} {{$permission}}
-                    </label>
-                @endforeach
+                <fieldset>
+                    <legend>{{ trans('user::group.label.permissions') }}</legend>
+                    @foreach($rights['default'] as $permission)
+                        <label class="checkbox-inline">
+                            {{ Form::hidden("permissions[$permission]" , 0)}}
+                            {{ Form::checkbox("permissions[$permission]", 1, array_key_exists($permission, $permissions)) }} {{$permission}}
+                        </label>
+                    @endforeach
+                </fieldset>
+
+
                 </div>
             </div>
             <div class="row">
@@ -61,22 +65,30 @@
                 <div class="row ">
                     @foreach($rights as $package => $p)
                         @if (is_array($p) AND  $package != 'default')
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                             <br />
-                            {{ Form::label(ucfirst($package))}}
-                            @foreach($p as $module => $m)
-                            @if (is_array($m))
-                            @foreach($m as $type => $t)
-                            @if (is_array($t))
-                            <div class="row" >
-                                <div class="col-lg-2 col-md-3" > {{ucfirst($module)}} &raquo; {{ucfirst($type)}} </div>
-                                <div class='col-lg-10 col-md-9' >
-                                    @foreach($t as $permission => $te)
-                                        <label class="checkbox-inline" style="padding-left: 0px;"> {{ Form::checkbox('permissions['.$package.'.'.$module.'.'.$type.'.'.$te.']', 1, array_key_exists($package.'.'.$module.'.'.$type.'.'.$te, $permissions)) }} {{ucfirst($te)}}</label>
-                                    @endforeach
+                            <fieldset>
+                                <legend>{{ ucfirst($package) }}</legend>
+                                @foreach($p as $module => $m)
+                                @if (is_array($m))
+                                @foreach($m as $type => $t)
+                                @if (is_array($t))
+                                <div class="row" >
+                                    <div class="col-lg-2 col-md-3" > {{ucfirst($module)}} &raquo; {{ucfirst($type)}} </div>
+                                    <div class='col-lg-10 col-md-9' >
+                                        @foreach($t as $permission => $te)
+                                            <label class="checkbox-inline">
+                                            {{-- */$key    = $package.'.'.$module.'.'.$type.'.'.$te/* --}}
+                                            {{ Form::hidden('permissions['.$key.']' , 0)}}
+                                            {{ Form::checkbox('permissions['.$key.']', 1,
+                                                                array_key_exists($key, $permissions),
+                                                                array('unchecked_value' => '0')) }}
+                                                                {{ucfirst($te)}}
+                                            </label>
+                                        @endforeach
+                                    </div>
                                 </div>
-                            </div>
-
+                            </fieldset>
 
                             @endif
                             @endforeach

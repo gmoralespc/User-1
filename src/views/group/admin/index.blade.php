@@ -1,4 +1,4 @@
-@extends('admin.layouts.index')
+@extends('Admin::views.index')
 @section('heading')
         <h1>
             {{ Lang::get('user::group.name') }}
@@ -46,7 +46,11 @@
                 @foreach ($groups as $group)
                 <tr>
                     <td><a href="{{ ($permissions['view']) ? (URL::to('admin/user/group/') . '/' . $group->id ) : '#' }}">{{ $group->name }}</a></td>
-                    <td>{{ (isset($group['permissions']['admin'])) ? '<i class="icon-ok"></i> Admin' : ''}} {{ (isset($group['permissions']['users'])) ? '<i class="icon-ok"></i> Users' : ''}}</td>
+                    <td>
+                    @foreach ($types as $type)
+                    {{ (isset($group['permissions'][$type])) ? ' <i class="fa fa-check-square fa-fw"></i> ' . ucfirst($type) : '<i class="fa fa-times fa-fw"></i> ' . ucfirst($type)}}
+                    @endforeach
+                    </td>
                     <td>
                         <div class="btn-group  btn-group-xs">
                             <a type="button" class="btn btn-info  {{ ($permissions['edit']) ? '' : 'disabled' }} view-btn-edit" href="{{ URL::to('admin/user/group')}}/{{$group->id}}/edit" title="{{ Lang::get('app.update') }} group"><i class="fa fa-pencil-square-o"></i></a>

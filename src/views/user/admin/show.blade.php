@@ -1,4 +1,4 @@
-@extends('admin.layouts.show')
+@extends('Admin::views.show')
 
 @section('heading')
 <h1>

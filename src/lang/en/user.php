@@ -75,19 +75,23 @@ return array(
 
     'Password_confirmation' => "Confirm Password",
 
-    'email'		       =>	"Email",
+    'email'		       =>	"E-mail Address",
 
     'pword'            =>  "Password",
 
-    'backlogin'		   =>	"Back to login",
+    'backlogin'		       =>	"Back to login",
 
-    'resend'           =>  "Resend",
+    'resend'            =>  "Resend",
 
-    'user'              =>  "User",
+    'user'                  =>  "User",
 
     'minutes'              =>  "Minutes",
 
     'suspend'           =>  "Suspend",
+
+    'signin'            =>  "Sign In",
+
+    'send'              =>  "Send",
 
     'profile_update'   =>  "Your profile has been updated",
 
@@ -115,7 +119,7 @@ return array(
                         "state"             => 'State',
                         "country"           => 'Country',
                         "web"               => 'Web',
-                        "email"             => 'Email',
+                        "email"             => 'E-mail Address',
                         "status"            => 'Status',
                         "minutes"            => 'Duration',
                         "login"             => 'Login',
@@ -123,8 +127,8 @@ return array(
 
     'placeholder'       =>  array(
 
-                        "email"             => 'Email',
-                        "name"              => 'Name',
+                        "email"             => 'Enter E-mail Address',
+                        "name"              => 'Enter Name',
                         "password"          => 'Entrer Password',
                         "password_confirmation"        => 'Re-enter Password',
                         "first_name"        => 'Enter First Name',

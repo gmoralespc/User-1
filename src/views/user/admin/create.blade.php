@@ -1,4 +1,4 @@
-@extends('admin.layouts.create')
+@extends('Admin::views.create')
 
 @section('heading')
 <h1>
@@ -77,7 +77,7 @@
     @stop
 
     @section('script')
-    
+
 
     @stop
 

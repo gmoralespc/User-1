@@ -47,8 +47,8 @@ class PublicController extends \UserController
     public function index()
     {
 
-        $users['users'] = $this->user->all();
-        return $this->theme->of('user::user.public.index',$users)->render();
+        $users['user'] = $this->user->all();
+        return $this->theme->of('user::user.public.view', $users)->render();
     }
 
     /**
@@ -68,6 +68,7 @@ class PublicController extends \UserController
      */
     public function store()
     {
+        
 
         $input = Input::all();
 
@@ -224,20 +225,49 @@ class PublicController extends \UserController
     public function getProfile()
     {
 
-        $id = Sentry::getUser()->id;
-        $user['user'] = $this->user->find($id);
-        return $this->theme->of('user::user.public.profile',$user)->render();
+        if(Sentry::check()){
+
+            if(!Sentry::getUser()->hasAccess('admin')){
+
+                $id = Sentry::getUser()->id;
+                $user['user'] = $this->user->find($id);
+                return $this->theme->of('user::user.public.profile',$user)->render();
+            } else {
+
+
+                return Redirect::to('login');
+            }
+        } else {
+
+             return Redirect::to('login');
+        }
 
     }
 
-    public function viewProfile()
-    {
 
-        $id = Sentry::getUser()->id;
-        $user['user'] = $this->user->find($id);
-        return $this->theme->of('user::user.public.view',$user)->render();
+    public function view()
+    {   
+        if(Sentry::check()){
+
+            if(!Sentry::getUser()->hasAccess('admin')){
+
+                $id = Sentry::getUser()->id;
+                $user['user'] = $this->user->find($id);
+                return $this->theme->of('user::user.public.view',$user)->render();
+           
+       
+         } else {
+
+
+                return Redirect::to('login');
+            }
+        } else {
+
+             return Redirect::to('login');
+        }    
 
     }
+
 
     public function postProfile()
     {

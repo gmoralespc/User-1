@@ -1,4 +1,4 @@
-@extends('admin.layouts.edit')
+@extends('Admin::views.edit')
 
 @section('heading')
 <h1>
@@ -75,6 +75,12 @@
                     -> label('user::user.label.photo')
                     -> placeholder('user::user.placeholder.photo')
                     -> addClass('image-up') }}
+                </div>
+
+                <div class="col-md-6 ">
+                    {{ Former::text('designation')
+                    -> label('user::user.label.designation')
+                    -> placeholder('user::user.placeholder.designation')}}
                 </div>
 
                 <div class="col-md-6 ">
@@ -156,10 +162,10 @@
             </div>
             <div class="tab-pane" id="password"><div class="row">
                 <div class="col-md-12">
-                    {{ Former::password('password')
+                    {{-- Former::password('password')
                     -> label('user::user.label.password')
                     -> value('')
-                    -> placeholder('user::user.placeholder.password')}}
+                    -> placeholder('user::user.placeholder.password')--}}
                 </div>
             </div></div>
             <div class="tab-pane" id="settings">

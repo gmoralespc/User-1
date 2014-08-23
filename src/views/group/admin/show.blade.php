@@ -1,4 +1,4 @@
-@extends('admin.layouts.show')
+@extends('Admin::views.show')
 @section('heading')
 <h1>
     {{ Lang::get('user::group.name') }}
@@ -21,7 +21,7 @@
 
 @section('buttons')
             <a class="btn btn-info  btn-xs" href="{{ URL::to('admin/user/group') }}" ><i class="fa fa-angle-left"></i> {{ Lang::get('app.back') }}</a>
-            
+
 @stop
 
 
