@@ -27,7 +27,7 @@ class SessionRepository extends BaseRepository implements SessionInterface
      */
     public function store($data)
     {
-     
+        
         $result = array();
         $rules = array(
             
@@ -95,6 +95,220 @@ class SessionRepository extends BaseRepository implements SessionInterface
                 //Login was succesful.
             $result['errors']   = $v;
             return $result;
+    }
+
+    public function authenticate($data){
+
+        $result = array();
+        $rules = array(
+            
+            'email'                 => 'required|min:4|max:32|email',
+            'password'              => 'required|min:6|max:32',
+
+        );
+        
+        //Run input validation
+        $v = Validator::make($data, $rules);
+
+        if ($v->fails()) {
+
+            // Validation has failed
+            $result['success']  = false;
+            $result['message']  = trans('users.invalidinputs');
+
+        } else {
+
+
+            try {
+                       
+                        // Set login credentials
+                        $credentials = array(
+                            'email'    => e($data['email']),
+                            'password' => e($data['password'])
+                        );
+
+                        // Try to authenticate the user
+                        $user = \Sentry::authenticate($credentials);
+                        \Sentry::logout();
+                        \Sentry::login($user);
+                        $result['success'] = true;
+                        $result['sessionData']['userId'] = $user->id;
+                        $result['sessionData']['email'] = $user->email;
+
+                } catch (\Cartalyst\Sentry\Users\UserNotFoundException $e) {
+                    // Sometimes a user is found, however hashed credentials do
+                    // not match. Therefore a user technically doesn't exist
+                    // by those credentials. Check the error message returned
+                    // for more information
+                    $result['success'] = false;
+                    $result['message'] = trans('user::sessions.invalid');
+                } catch (\Cartalyst\Sentry\Users\UserNotActivatedException $e) {
+                        $result['success'] = false;
+                        $url = URL::to('resend');
+                        $result['message'] = trans('user::sessions.notactive', array('url' => $url));
+                }
+                        // The following is only required if throttle is enabled
+                catch (\Cartalyst\Sentry\Throttling\UserSuspendedException $e) {
+                    $time = $throttle->getSuspensionTime();
+                    $result['success'] = false;
+                    $result['message'] = trans('user::sessions.suspended');
+                } catch (\Cartalyst\Sentry\Throttling\UserBannedException $e) {
+                        $result['success'] = false;
+                        $result['message'] = trans('user::sessions.banned');
+                }
+
+        }
+
+        $result['errors']   = $v;
+        return $result;
+    }
+
+    public function authenticateAndRemember($data){
+
+        $result = array();
+        $rules = array(
+            
+            'email'                 => 'required|min:4|max:32|email',
+            'password'              => 'required|min:6|max:32',
+
+        );
+        
+        //Run input validation
+        $v = Validator::make($data, $rules);
+
+        if ($v->fails()) {
+
+            // Validation has failed
+            $result['success']  = false;
+            $result['message']  = trans('users.invalidinputs');
+
+        } else {
+
+
+            try {
+                       
+                        // Set login credentials
+                        $credentials = array(
+                            'email'    => e($data['email']),
+                            'password' => e($data['password'])
+                        );
+
+                        // Try to authenticate the user
+                        $user = \Sentry::authenticateAndRemember($credentials);
+                        \Sentry::logout();
+                        \Sentry::login($user);
+                        $result['success'] = true;
+                        $result['sessionData']['userId'] = $user->id;
+                        $result['sessionData']['email'] = $user->email;
+
+                } catch (\Cartalyst\Sentry\Users\UserNotFoundException $e) {
+                    // Sometimes a user is found, however hashed credentials do
+                    // not match. Therefore a user technically doesn't exist
+                    // by those credentials. Check the error message returned
+                    // for more information
+                    $result['success'] = false;
+                    $result['message'] = trans('user::sessions.invalid');
+                } catch (\Cartalyst\Sentry\Users\UserNotActivatedException $e) {
+                        $result['success'] = false;
+                        $url = URL::to('resend');
+                        $result['message'] = trans('user::sessions.notactive', array('url' => $url));
+                }
+                        // The following is only required if throttle is enabled
+                catch (\Cartalyst\Sentry\Throttling\UserSuspendedException $e) {
+                    $time = $throttle->getSuspensionTime();
+                    $result['success'] = false;
+                    $result['message'] = trans('user::sessions.suspended');
+                } catch (\Cartalyst\Sentry\Throttling\UserBannedException $e) {
+                        $result['success'] = false;
+                        $result['message'] = trans('user::sessions.banned');
+                }
+
+        }
+
+        $result['errors']   = $v;
+        return $result;
+
+    }
+
+    public function loginAndRemember($data){
+
+        $result = array();
+        $rules = array(
+            
+            'email'                 => 'required|min:4|max:32|email',
+            'password'              => 'required|min:6|max:32',
+
+        );
+        
+        //Run input validation
+        $v = Validator::make($data, $rules);
+
+        if ($v->fails()) {
+
+            // Validation has failed
+            $result['success']  = false;
+            $result['message']  = trans('users.invalidinputs');
+
+        } else {
+
+
+            try {
+                       
+                        // Set login credentials
+                        $credentials = array(
+                            'email'    => e($data['email']),
+                            'password' => e($data['password'])
+                        );
+
+                        // Try to authenticate the user
+                        $user = \Sentry::loginAndRemember($credentials);
+                        \Sentry::logout();
+                        \Sentry::login($user);
+                        $result['success'] = true;
+                        $result['sessionData']['userId'] = $user->id;
+                        $result['sessionData']['email'] = $user->email;
+
+                } catch (\Cartalyst\Sentry\Users\UserNotFoundException $e) {
+                    // Sometimes a user is found, however hashed credentials do
+                    // not match. Therefore a user technically doesn't exist
+                    // by those credentials. Check the error message returned
+                    // for more information
+                    $result['success'] = false;
+                    $result['message'] = trans('user::sessions.invalid');
+                } catch (\Cartalyst\Sentry\Users\UserNotActivatedException $e) {
+                        $result['success'] = false;
+                        $url = URL::to('resend');
+                        $result['message'] = trans('user::sessions.notactive', array('url' => $url));
+                }
+                        // The following is only required if throttle is enabled
+                catch (\Cartalyst\Sentry\Throttling\UserSuspendedException $e) {
+                    $time = $throttle->getSuspensionTime();
+                    $result['success'] = false;
+                    $result['message'] = trans('user::sessions.suspended');
+                } catch (\Cartalyst\Sentry\Throttling\UserBannedException $e) {
+                        $result['success'] = false;
+                        $result['message'] = trans('user::sessions.banned');
+                }
+
+        }
+
+        $result['errors']   = $v;
+        return $result;
+
+    }
+    public function check(){
+
+        if ( ! \Sentry::check())
+        {
+            
+            return $result['success'] = false;
+        }
+        else
+        { 
+
+            return $result['success'] = true;
+    
+        }
     }
 
     /**

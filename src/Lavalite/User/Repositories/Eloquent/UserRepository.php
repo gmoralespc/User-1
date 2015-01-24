@@ -32,18 +32,28 @@ class UserRepository extends BaseRepository implements UserInterface
      *
      * @return Response
      */
-    public function create($data, $group = array('admin'))
+    public function create($data, $group = array())
     {
 
         // Set Validation Rules
         $result = array();
-        $rules = array(
-
+        if(isset($data['username'])){
+            
+            $rules = array(
             'email'                     => 'required|min:4|max:32|email',
             'password'                  => 'required|min:6|confirmed',
             'password_confirmation'     => 'required',
             );
 
+        } else {
+        
+            $rules = array(
+            'username'                  => 'required|min:4|max:32',
+            'password'                  => 'required|min:6|confirmed',
+            'password_confirmation'     => 'required',
+            );
+        }
+       
         //Run input validation
         $v = Validator::make($data, $rules);
 
@@ -58,6 +68,9 @@ class UserRepository extends BaseRepository implements UserInterface
                 $user                   = array();
                 $user['first_name']     = e($data['first_name']);
                 $user['last_name']      = e($data['last_name']);
+                if(isset($data['username'])){
+                    $user['username']   = e($data['username']);
+                }  
                 $user['email']          = e($data['email']);
                 $user['password']       = e($data['password']);
                 $user['activated']      = true;
@@ -107,14 +120,24 @@ class UserRepository extends BaseRepository implements UserInterface
 
         // Set Validation Rules
         $result = array();
-        $rules = array(
+        if(isset($data['username'])){
 
-            'email'                     => 'required|min:4|max:32|email',
-            'password'                  => 'required|min:6|confirmed',
-            'password_confirmation'     => 'required',
-            'recaptcha_response_field'  => 'required|recaptcha',
+            $rules = array(
+               
+                'username'                  => 'required|min:4|max:32',
+                'password'                  => 'required|min:6|confirmed',
+                'password_confirmation'     => 'required',
+            );
+        } else {
+            
+             $rules = array(
+                'email'                     => 'required|min:4|max:32|email',
+                'password'                  => 'required|min:6|confirmed',
+                'password_confirmation'     => 'required',
             );
 
+        }
+    
         //Run input validation
         $v = Validator::make($data, $rules);
 
@@ -129,9 +152,15 @@ class UserRepository extends BaseRepository implements UserInterface
                 $user                   = array();
                 $user['first_name']     = e($data['first_name']);
                 $user['last_name']      = e($data['last_name']);
+                if(isset($data['username'])){
+                    $user['username']   = e($data['username']);
+                } 
                 $user['email']          = e($data['email']);
                 $user['password']       = e($data['password']);
-                $user['permissions']    = ['user' => 1];
+                $user['facebook']       = e($data['facebook']);
+                $user['twitter']        = e($data['twitter']);
+                $user['linkedin']       = e($data['linkedin']);
+                $user['google']         = e($data['google']);
                 //Attempt to register the user.
                 $user      = Sentry::register($user);
 
@@ -229,7 +258,8 @@ class UserRepository extends BaseRepository implements UserInterface
      * @return Response
      */
     public function destroy($id)
-    {
+    {   
+       
         try {
             // Find the user using the user id
             $user = Sentry::findUserById($id);
@@ -694,19 +724,20 @@ class UserRepository extends BaseRepository implements UserInterface
     return $password;
     }
 
-    public function profileedit($id)
+    public function profileedit($id, $data = array())
     {
+        if( Input::all()){
+        $input = Input::all(); } else {
+        $input = $data;
+        }
 
-        $input = Input::all();
         // Set Validation Rules
         $rules = array (
 
             'first_name'    => 'alpha|required',
             'last_name'     => 'alpha|required',
-            'mobile'        => 'numeric',
-            'phone'         => 'numeric',
-            'state'         => 'alpha',
-            'district'      => 'alpha',
+            'email'         => 'numeric|email',
+            
 
             );
 
@@ -761,4 +792,29 @@ class UserRepository extends BaseRepository implements UserInterface
 
 
     }
+
+
+    /**
+     * Check social login status
+     * @param $provider
+     * @param $id
+     * @param $email
+     * @return bool
+     */
+    public function social($provider, $id, $email)
+    {
+        try {
+            // Find the user using the user id
+            $user = Sentry::findUserByLogin($email);
+            if($user->$provider = $id) {
+                Sentry::login($user);
+                return true;
+            }
+        } catch (Exception $e) {
+            throw $e;
+        }
+        return false;
+    }
+
+
 }

@@ -34,6 +34,9 @@ Route::group(array('prefix' => Localization::setLocale()), function () {
 
     Route::get('/user/{id}/reset/{code}', 'Lavalite\User\Controllers\PublicController@reset')->where('id', '[0-9]+');
 
-    // Route::get('user', 'Lavalite\User\Controllers\PublicController@index');
+    Route::get('user/social/facebook', 'Lavalite\User\Controllers\SocialController@facebook');
+    Route::get('user/social/twitter', 'Lavalite\User\Controllers\SocialController@twitter');
+    Route::get('user/social/google', 'Lavalite\User\Controllers\SocialController@google');
+    Route::get('user/social/linkedin', 'Lavalite\User\Controllers\SocialController@linkedin');
 
 });

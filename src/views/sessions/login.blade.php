@@ -27,11 +27,11 @@
             <a class="btn btn-link" href="{{ URL::to('/forgot') }}">{{Lang::get('user::user.forgot')}}?</a>                {{ Form::close() }}
             </div>
             <div class="col-md-4 column">
-
-                <button type="button" class="btn btn-primary btn-lg btn-block"><i class="fa fa-facebook"> Facebook</i></button>
-                <button type="button" class="btn btn-primary btn-lg btn-block"><i class="fa fa-twitter"> Twitter</i></button>
-                <button type="button" class="btn btn-primary btn-lg btn-block"><i class="fa fa-google-plus"> Google Plus</i></button>
-                <button type="button" class="btn btn-primary btn-lg btn-block"><i class="fa fa-linkedin"> Linkedin</i></button>
+             Register with:
+                             <a href='{{URL::to('user/social/facebook')}}' ><span class="fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-facebook fa-stack-1x fa-inverse"></i> </span></a>
+                             <a href='{{URL::to('user/social/twitter')}}' ><span class="fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-twitter fa-stack-1x fa-inverse"></i> </span></a>
+                             <a href='{{URL::to('user/social/google')}}' ><span class="fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-google-plus fa-stack-1x fa-inverse"></i> </span></a>
+                             <a href='{{URL::to('user/social/linkedin')}}' ><span class="fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i> </span></a>
             </div>
             <div class="col-md-12 column">
                 <h2> New User ? </h2>

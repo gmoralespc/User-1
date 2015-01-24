@@ -54,6 +54,13 @@
                         -> placeholder('user::user.placeholder.email')}}
                     </div>
 
+                    <div class="col-md-12">
+                        {{ Former::email('mobile')
+                         -> label('user::user.label.mobile')
+                         -> placeholder('user::user.placeholder.mobile')}}
+                       {{ Former::hidden('facebook')}}
+                    </div>
+
                     <div class="col-md-6">
                         {{ Former::password('password')
                         -> label('user::user.label.password')
@@ -66,10 +73,7 @@
                         -> placeholder('user::user.placeholder.password_confirmation')}}
                     </div>
                     <div class="col-md-12">
-                         {{ Former::hidden('facebook')}}
-                         {{ Former::hidden('google')}}
-                         {{ Former::hidden('twitter')}}
-                         {{ Former::hidden('linkedin')}}
+                        {{ Form::captcha(array('theme' => 'white')) }}
                     </div>
                 </div>
                 <div class="row">
@@ -81,15 +85,7 @@
 
                 </div>
 
-                    <div class="row">
-                         <div class="col-md-12" > Register with:
-                             <a href='{{URL::to('user/social/facebook')}}' ><span class="fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-facebook fa-stack-1x fa-inverse"></i> </span></a>
-                             <a href='{{URL::to('user/social/twitter')}}' ><span class="fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-twitter fa-stack-1x fa-inverse"></i> </span></a>
-                             <a href='{{URL::to('user/social/google')}}' ><span class="fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-google-plus fa-stack-1x fa-inverse"></i> </span></a>
-                             <a href='{{URL::to('user/social/linkedin')}}' ><span class="fa-stack fa-lg"> <i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i> </span></a>
-                         </div>
-                    </div>
-               {{ Former::close() }}<br/><br/>
+                {{ Former::close() }}<br/><br/>
 
                            
 

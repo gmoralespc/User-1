@@ -22,6 +22,7 @@ class GroupRepository extends BaseRepository implements GroupInterface
      */
     public function store($data)
     {
+     
         // Logic for missing checkbox values
         if (!array_key_exists('adminPermissions', $data)) $data['adminPermissions'] = 0;
         if (!array_key_exists('userPermissions', $data)) $data['userPermissions'] = 0;
