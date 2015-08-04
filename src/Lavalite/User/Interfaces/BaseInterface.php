@@ -8,20 +8,20 @@ interface BaseInterface
 
     public function all();
 
-    public function create($create_array);
+    public function create(array $credentials);
+
+    public function json();
 
     public function find($id);
 
-    public function first($field, $value);
+    public function findOrNew($id);
 
-    public function orderBy($field, $order);
-
-    public function orderByAndPaginate($field, $order, $per_page);
-
-    public function paginate($per_page);
-
-    public function save();
+    public function update($id, $array);
 
     public function delete($id);
+
+    public function destroy($ids);
+
+    public function instance();
 
 }

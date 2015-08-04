@@ -18,32 +18,41 @@
  * @link       http://cartalyst.com
  */
 
-interface SessionInterface {
+interface CookieInterface {
 
     /**
-     * Returns the session key.
+     * Returns the cookie key.
      *
      * @return string
      */
     public function getKey();
 
     /**
-     * Put a value in the Sentry session.
+     * Put a value in the Sentry cookie.
      *
-     * @param  mixed   $value
+     * @param  mixed  $value
+     * @param  int    $minutes
      * @return void
      */
-    public function put($value);
+    public function put($value, $minutes);
 
     /**
-     * Get the Sentry session value.
+     * Put a value in the Sentry cookie forever.
+     *
+     * @param  mixed  $value
+     * @return void
+     */
+    public function forever($value);
+
+    /**
+     * Get the Sentry cookie value.
      *
      * @return mixed
      */
     public function get();
 
     /**
-     * Remove the Sentry session.
+     * Remove the Sentry cookie.
      *
      * @return void
      */
