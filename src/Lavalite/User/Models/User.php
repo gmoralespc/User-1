@@ -985,10 +985,10 @@ class User extends Model implements UserInterface {
 
     public function initialize()
     {
-        $this->fillable             = Config::get('user::user.fillable');
-        $this->uploads              = Config::get('user::user.uploadable');
-        $this->uploadRootFolder     = Config::get('user::user.upload_root_folder');
-        $this->table                = Config::get('user::user.table');
+        $this->fillable             = config('user::user.fillable');
+        $this->uploads              = config('user::user.uploadable');
+        $this->uploadRootFolder     = config('user::user.upload_root_folder');
+        $this->table                = config('user::user.table');
     }
 
 }

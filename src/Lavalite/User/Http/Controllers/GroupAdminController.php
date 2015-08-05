@@ -60,7 +60,7 @@ class GroupAdminController extends AdminController {
             }
 
         }
-        catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+        catch (Lavalite\User\Users\UserNotFoundException $e)
         {
             Session::flash('error', 'User was not found.');
             return Redirect::to('admin/user/group/index');
@@ -129,12 +129,12 @@ class GroupAdminController extends AdminController {
                 }
 
             }
-            catch (Cartalyst\Sentry\Groups\NameRequiredException $e)
+            catch (Lavalite\User\Groups\NameRequiredException $e)
             {
                 Session::flash('error', 'Name field is required');
                 return Redirect::to('admin/user/group/create')->withErrors($v)->withInput();
             }
-            catch (Cartalyst\Sentry\Groups\GroupExistsException $e)
+            catch (Lavalite\User\Groups\GroupExistsException $e)
             {
                 Session::flash('error', 'Group already exists');
                 return Redirect::to('admin/user/group/create')->withErrors($v)->withInput();
@@ -158,7 +158,7 @@ class GroupAdminController extends AdminController {
             // Get the group permissions
             $data['groupPermissions'] = $data['group']->getPermissions();
         }
-        catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+        catch (Lavalite\User\Groups\GroupNotFoundException $e)
         {
             Session::flash('error', 'Group does not exist.');
             return Redirect::to('admin/user/group');
@@ -184,7 +184,7 @@ class GroupAdminController extends AdminController {
 
 
         }
-        catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+        catch (Lavalite\User\Groups\GroupNotFoundException $e)
         {
             Session::flash('error', 'Group does not exist.');
             return Redirect::to('admin/user/group');
@@ -245,12 +245,12 @@ class GroupAdminController extends AdminController {
                     return Redirect::to('admin/user/group/'. $id . '/edit')->withErrors($v)->withInput();
                 }
             }
-            catch (Cartalyst\Sentry\Groups\GroupExistsException $e)
+            catch (Lavalite\User\Groups\GroupExistsException $e)
             {
                 Session::flash('error', 'Group already exists.');
                 return Redirect::to('admin/user/group/'. $id . '/edit')->withErrors($v)->withInput();
             }
-            catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+            catch (Lavalite\User\Groups\GroupNotFoundException $e)
             {
                 Session::flash('error', 'Group was not found.');
                 return Redirect::to('admin/user/group/'. $id . '/edit')->withErrors($v)->withInput();
@@ -285,7 +285,7 @@ class GroupAdminController extends AdminController {
                 return Redirect::to('admin/user/group');
             }
         }
-        catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+        catch (Lavalite\User\Groups\GroupNotFoundException $e)
         {
             Session::flash('error', 'Group was not found.');
             return Redirect::to('admin/user/group');
@@ -294,14 +294,14 @@ class GroupAdminController extends AdminController {
 
     public function userRights(){
 
-        $packages               = Config::get('cms.packages');
-        $rights['default']      = Config::get('cms.usertypes');
+        $packages               = config('cms.packages');
+        $rights['default']      = config('cms.usertypes');
 
         foreach ($packages as $package => $status){
-            $modules    = Config::get("{$package}::modules");
+            $modules    = config("{$package}::modules");
             if (is_array($modules))
             foreach ($modules as $module){
-                $rights[$package][$module]   = Config::get("{$package}::{$module}.permissions");
+                $rights[$package][$module]   = config("{$package}::{$module}.permissions");
             }
         }
 
