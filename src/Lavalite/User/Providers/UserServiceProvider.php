@@ -24,14 +24,16 @@ class UserServiceProvider extends ServiceProvider {
 
         // Publish a config file
         $this->publishes([
-            __DIR__.'/../../../../config/package.php' => config_path('package.php')
+            __DIR__.'/../../../../config/package.php' => config_path('user.php')
         ], 'config');
 
         // Publish your migrations
         $this->publishes([
             __DIR__.'/../../../database/migrations/' => database_path('/migrations')
         ], 'migrations');
-        
+
+        $this->app->register('\Artesaos\Defender\Providers\DefenderServiceProvider');
+
         include __DIR__ . '/../Http/routes.php';
 	}
 
@@ -47,44 +49,19 @@ class UserServiceProvider extends ServiceProvider {
         });
 
         $this->app->bind(
-            'Lavalite\\User\\Interfaces\\GroupInterface',
-            'Lavalite\\User\\Models\\Group'
-            );
+            'Lavalite\\User\\Interfaces\\RoleRepositoryInterface',
+            'Lavalite\\User\\Repositories\\Eloquent\\RoleRepository'
+        );
 
         $this->app->bind(
-            'Lavalite\\User\\Interfaces\\ThrottleInterface',
-            'Lavalite\\User\\Models\\Throttle'
-            );
+            'Lavalite\\User\\Interfaces\\UserRepositoryInterface',
+            'Lavalite\\User\\Repositories\\Eloquent\\UserRepository'
+        );
 
         $this->app->bind(
-            'Lavalite\\User\\Interfaces\\UserInterface',
-            'Lavalite\\User\\Models\\User'
-            );
-
-        $this->app->bind(
-            'Lavalite\\User\\Interfaces\\GroupProviderInterface',
-            'Lavalite\\User\\Providers\\GroupProvider'
-            );
-
-        $this->app->bind(
-            'Lavalite\\User\\Interfaces\\ThrottlingProviderInterface',
-            'Lavalite\\User\\Providers\\ThrottlingProvider'
-            );
-
-        $this->app->bind(
-            'Lavalite\\User\\Interfaces\\UserProviderInterface',
-            'Lavalite\\User\\Providers\\UserProvider'
-            );
-
-        $this->app->bind(
-            'Lavalite\\User\\Interfaces\\CookieInterface',
-            'Lavalite\\User\\Stores\\IlluminateCookie'
-            );
-
-        $this->app->bind(
-            'Lavalite\\User\\Interfaces\\SessionInterface',
-            'Lavalite\\User\\Stores\\IlluminateSession'
-            );
+            'Lavalite\\User\\Interfaces\\PermissionRepositoryInterface',
+            'Lavalite\\User\\Repositories\\Eloquent\\PermissionRepository'
+        );
 	}
 
 

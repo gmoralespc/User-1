@@ -10,7 +10,9 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9"
+        "php": ">=5.5.9",
+        "artesaos/defender": "dev-master",
+        "laravel/socialite": "^3.0@dev"
     },
     "autoload": {
         "classmap": [

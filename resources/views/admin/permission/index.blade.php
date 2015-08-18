@@ -1,16 +1,16 @@
 @extends('admin::curd.index')
 @section('heading')
-<i class="fa fa-file-text-o"></i> {!! trans('user::package.name') !!} <small> {!! trans('app.manage') !!} {!! trans('user::package.names') !!}</small>
+<i class="fa fa-file-text-o"></i> {!! trans('user::permission.name') !!} <small> {!! trans('cms.manage') !!} {!! trans('user::permission.names') !!}</small>
 @stop
 
 @section('title')
-{!! trans('user::user.names') !!}
+{!! trans('user::permission.names') !!}
 @stop
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{!! URL::to('admin') !!}"><i class="fa fa-dashboard"></i> {!! trans('app.home') !!} </a></li>
-    <li class="active">{!! trans('user::user.names') !!}</li>
+    <li><a href="{!! URL::to('admin') !!}"><i class="fa fa-dashboard"></i> {!! trans('cms.home') !!} </a></li>
+    <li class="active">{!! trans('user::permission.names') !!}</li>
 </ol>
 @stop
 
@@ -25,33 +25,22 @@
 
 @section('content')
 <table id="main_list" class="table table-striped table-bordered">
-    <thead>
     <tr>
         <th width="20"><input type="checkbox" name="checkall" id="checkall" class="checkbox" value="all"></th>
-        <th>{!! trans('user::user.label.email')!!}</th>
-        <th>{!! trans('user::user.label.first_name')!!}</th>
-        <th>{!! trans('user::user.label.last_name')!!}</th>
-        <th>{!! trans('user::user.label.designation')!!}</th>
-        <th>{!! trans('user::user.label.mobile')!!}</th>
+        <th>{!! trans('user::permission.label.name')!!}</th>
     </tr>
-    </thead>
 </table>
 @stop
-
 @section('script')
 <script type="text/javascript">
 var oTable;
 $(document).ready(function(){
-    $('#entry').load('{{URL::to('admin/user/user/0')}}');
+    $('#entry').load('{{URL::to('admin/user/permission/0')}}');
     oTable = $('#main_list').dataTable( {
-        "ajax": '{{ URL::to('/admin/user/user/list') }}',
+        "ajax": '{{ URL::to('/admin/user/permission/list') }}',
         "columns": [
         { "data": "id" },
-        { "data": "email" },
-        { "data": "first_name" },
-        { "data": "last_name" },
-        { "data": "designation" },
-        { "data": "mobile" }],
+        { "data": "name" },],
         "fnCreatedRow": function( nRow, aData, iDataIndex ) {
             $('td:eq(0)', nRow).html( '<input type="checkbox" name="ids[]" id="ids_'+ aData.id +'" class="checkRow" value="'+ aData.id+'">');
         },
@@ -59,7 +48,7 @@ $(document).ready(function(){
               { 'bSortable': false, 'aTargets': [0] }
            ],
         "order": [[ 1, "asc" ]],
-        "userLength": 50
+        "permissionLength": 50
     });
 
     $('#main_list tbody').on( 'click', 'tr', function () {
@@ -67,7 +56,7 @@ $(document).ready(function(){
 
         var d = $('#main_list').DataTable().row( this ).data();
 
-        $('#entry').load('{{URL::to('admin/user/user')}}/' + d.id, function( response, status, xhr ) {
+        $('#entry').load('{{URL::to('admin/user/permission')}}' + '/' + d.id, function( response, status, xhr ) {
           if ( status == "error" ) {
             toastr.error(xhr.status + " " + xhr.statusText, 'Error');
           }
@@ -90,18 +79,18 @@ $(document).ready(function(){
           arrayids.push(parseInt($(this).val()));
           id = parseInt($(this).val());
         });
-        $('#form-div').load('/user/'+id);
+        $('#form-div').load('/permission/'+id);
 
       } else {
         arrayids = [];
         id = 0;
         $("#main_list tr").removeClass('selected');
-        $('#form-div').load('/user/0');
+        $('#form-div').load('/permission/0');
       }
     });
 
     $('#btnDelete').click(function(){
-        toastr.warning('Are you shure you want to delete the users? <br><div class="pull-right"><button type="button" id="confirmDelete" class="btn btn-danger btn-xs">Yes</button> <button type="button" id="btnClose" class="btn btn-danger btn-xs">No</button></div>', 'Delete user(s)!');
+        toastr.warning('Are you shure you want to delete the permissions? <br><div class="pull-right"><button type="button" id="confirmDelete" class="btn btn-danger btn-xs">Yes</button> <button type="button" id="btnClose" class="btn btn-danger btn-xs">No</button></div>', 'Delete permission(s)!');
     });
 
 });
@@ -110,6 +99,7 @@ $(document).ready(function(){
 
 @section('style')
 @stop
+
 
 
 

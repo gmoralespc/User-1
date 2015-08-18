@@ -22,7 +22,7 @@ class UserMailer extends Mailer
      */
     public function welcome($email, $userId, $activationCode)
     {
-        $subject                = 'Welcome to Test Website';
+        $subject                = 'Welcome to | ' . trans('cms.name');
         $view                   = 'user::emails.auth.welcome';
         $data['userId']         = $userId;
         $data['activationCode'] = $activationCode;
@@ -38,7 +38,7 @@ class UserMailer extends Mailer
      */
     public function forgotPassword($email, $userId, $resetCode)
     {
-        $subject            = 'Password Reset Confirmation | Laravel4 With Sentry';
+        $subject            = 'Password Reset Confirmation | ' . trans('cms.name');
         $view               = 'user::emails.auth.reset';
         $data['userId']     = $userId;
         $data['resetCode']  = $resetCode;
@@ -54,7 +54,7 @@ class UserMailer extends Mailer
      */
     public function newPassword($email, $newPassword)
     {
-        $subject                = 'New Password Information | Laravel4 With Sentry';
+        $subject                = 'New Password Information | ' . trans('cms.name');
         $view                   = 'user::emails.auth.newpassword';
         $data['newPassword']    = $newPassword;
         $data['email']          = $email;

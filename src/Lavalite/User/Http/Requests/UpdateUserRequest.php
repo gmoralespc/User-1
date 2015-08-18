@@ -12,7 +12,7 @@ class UpdateUserRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return User::hasAnyAccess(['User.edit']);
+		return User::canAny(['user.edit']);
 	}
 
 	/**

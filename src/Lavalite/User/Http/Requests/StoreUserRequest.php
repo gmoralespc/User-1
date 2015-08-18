@@ -12,7 +12,7 @@ class StoreUserRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return User::hasAnyAccess(['User.create']);
+		return User::canAny(['user.create']);
 	}
 
 	/**

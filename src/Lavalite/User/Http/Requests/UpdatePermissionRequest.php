@@ -2,9 +2,8 @@
 
 use App\Http\Requests\Request;
 use User;
-use Repository;
 
-class ViewUserRequest extends Request {
+class UpdatePermissionRequest extends Request {
 
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -13,7 +12,8 @@ class ViewUserRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return User::canAny(['user.view']);
+		return User::canAny
+(['permission.edit']);
 	}
 
 	/**

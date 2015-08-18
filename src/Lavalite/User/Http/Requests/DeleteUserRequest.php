@@ -12,7 +12,7 @@ class DeleteUserRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return User::hasAnyAccess(['User.delete']);
+		return User::canAny(['user.delete']);
 	}
 
 	/**
