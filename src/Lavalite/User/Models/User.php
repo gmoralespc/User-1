@@ -29,7 +29,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @return string image path
      */
-    public function getPhotoAttribute($value)
+    public function getPictureAttribute($value)
     {
         if (!empty($value)) {
             $photo = json_encode($value);

@@ -46,7 +46,7 @@ class PermissionAdminController extends AdminController
 
     public function create(StorePermissionRequest $request)
     {
-        $permission   = $this->model->instance();
+        $permission   = $this->model->findOrNew(0);
         Former::populate($permission);
         return  view('user::admin.permission.create', compact('permission'));
     }

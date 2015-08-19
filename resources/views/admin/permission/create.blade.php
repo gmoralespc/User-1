@@ -13,7 +13,7 @@
             <li class="active"><a href="#details" data-toggle="tab">Permission</a></li>
         </ul>
         {!!Former::vertical_open()
-        ->id('formEntry')
+        ->id('create-user-permission')
         ->method('POST')
         ->files('true')
         ->action(URL::to('admin/user/permission'))!!}
@@ -42,14 +42,14 @@
 <script type="text/javascript">
 (function ($) {
     $('#btnSave').click(function(){
-        $('#formEntry').submit();
+        $('#create-user-permission').submit();
     });
     $('#btnCancel').click(function(){
         $('#entry').load('{{URL::to('admin/user/permission/0')}}');
     });
-    $('#formEntry')
+    $('#create-user-permission')
     .submit( function( e ) {
-        if($('#formEntry').valid() == false) {
+        if($('#create-user-permission').valid() == false) {
             toastr.error('Please enter valid information.', 'Error');
             return;
         }
@@ -62,16 +62,11 @@
             contentType: false,
             success:function(data, textStatus, jqXHR)
             {
-                toastr.success(data.message, 'Success');
                 $('#main_list').DataTable().ajax.reload( null, false );
                 $('#entry').load('{{URL::to('admin/user/permission')}}/' + data.id);
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
-                toastr.error(data.message, 'Error');
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
             }
         });
         e.preventDefault();

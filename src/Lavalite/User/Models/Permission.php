@@ -18,25 +18,8 @@ class Permission extends Model
     protected $package      = 'user';
 
 
-    protected $fillable = ['id', 'name', 'readable_name', 'created_at', 'updated_at'];
+    protected $fillable = ['name', 'readable_name'];
 
-
-   /**
-     * Listen for save and updating event
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saving(function ($model) {
-
-            $model->upload();
-            //$model->slug = !empty($model->slug) ? Str::slug($model->slug) : $model->getUniqueSlug($model->name);
-        });
-
-    }
 
 
 }
