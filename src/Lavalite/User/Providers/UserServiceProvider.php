@@ -22,15 +22,8 @@ class UserServiceProvider extends ServiceProvider {
         $this->loadViewsFrom(__DIR__.'/../../../../resources/views', 'user');
         $this->loadTranslationsFrom(__DIR__.'/../../../../resources/lang', 'user');
 
-        // Publish a config file
-        $this->publishes([
-            __DIR__.'/../../../../config/package.php' => config_path('user.php')
-        ], 'config');
-
-        // Publish your migrations
-        $this->publishes([
-            __DIR__.'/../../../database/migrations/' => database_path('/migrations')
-        ], 'migrations');
+        $this->publishResources();
+        $this->publishMigrations();
 
         $this->app->register('\Artesaos\Defender\Providers\DefenderServiceProvider');
         $this->app->register('\Laravel\Socialite\SocialiteServiceProvider');
@@ -65,5 +58,30 @@ class UserServiceProvider extends ServiceProvider {
         );
 	}
 
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array('user');
+    }
+
+    /**
+     * Publish configuration file.
+     */
+    private function publishResources()
+    {
+        $this->publishes([__DIR__.'/../../../../config/config.php' => config_path('user.php')], 'config');
+    }
+
+    /**
+     * Publish migration file.
+     */
+    private function publishMigrations()
+    {
+        $this->publishes([__DIR__.'/../../../../migrations/' => base_path('database/migrations')], 'migrations');
+    }
 
 }
