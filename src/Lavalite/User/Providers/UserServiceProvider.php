@@ -33,6 +33,7 @@ class UserServiceProvider extends ServiceProvider {
         ], 'migrations');
 
         $this->app->register('\Artesaos\Defender\Providers\DefenderServiceProvider');
+        $this->app->register('\Laravel\Socialite\SocialiteServiceProvider');
 
         include __DIR__ . '/../Http/routes.php';
 	}
