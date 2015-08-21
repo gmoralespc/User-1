@@ -81,7 +81,7 @@ class UserServiceProvider extends ServiceProvider {
      */
     private function publishMigrations()
     {
-        $this->publishes([__DIR__.'/../../../../database/migrations/' => base_path('database/migrations')], 'migrations');
+        $this->publishes([__DIR__.'/../../../../databases/migrations/' => base_path('database/migrations')], 'migrations');
     }
 
 }

@@ -1,6 +1,6 @@
 @extends('admin::curd.index')
 @section('heading')
-<i class="fa fa-file-text-o"></i> {!! trans('user::package.name') !!} <small> {!! trans('app.manage') !!} {!! trans('user::package.names') !!}</small>
+<i class="fa fa-file-text-o"></i> {!! trans('user::package.name') !!} <small> {!! trans('cms.manage') !!} {!! trans('user::package.names') !!}</small>
 @stop
 
 @section('title')
@@ -9,8 +9,8 @@
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{!! URL::to('admin') !!}"><i class="fa fa-dashboard"></i> {!! trans('app.home') !!} </a></li>
-    <li class="active">{!! trans('user::user.names') !!}</li>
+    <li><a href="{!! URL::to('admin') !!}"><i class="fa fa-dashboard"></i> {!! trans('cms.home') !!} </a></li>
+    <li class="active">{!! trans('user::package.names') !!}</li>
 </ol>
 @stop
 
