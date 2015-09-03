@@ -12,7 +12,7 @@ class StoreUserRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return User::canAny(['user.create']);
+		return User::can(['user.create']);
 	}
 
 	/**
@@ -22,8 +22,10 @@ class StoreUserRequest extends Request {
 	 */
 	public function rules()
 	{
+		if(!Request::isMethod('POST')) return [];
+
 		return [
-			//
+			'name' => 'required',
 		];
 	}
 

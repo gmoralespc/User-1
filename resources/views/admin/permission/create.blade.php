@@ -1,8 +1,8 @@
 <div class="box-header with-border">
     <h3 class="box-title"> New Permission </h3>
     <div class="box-tools pull-right">
-        <button type="button" class="btn btn-primary btn-sm" id="btnSave"><i class="fa fa-floppy-o"></i> Save</button>
-        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="btnCancel"><i class="fa fa-times-circle"></i> Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-save"><i class="fa fa-floppy-o"></i> Save</button>
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="btn-cancel"><i class="fa fa-times-circle"></i> Cancel</button>
         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
     </div>
 </div>
@@ -19,18 +19,7 @@
         ->action(URL::to('admin/user/permission'))!!}
         <div class="tab-content">
             <div class="tab-pane active" id="details">
-                  <div class="row">
-
-               <div class='col-md-4 col-sm-6'>{!! Former::text('name')
-               -> label(trans('user::permission.label.name'))
-               -> placeholder(trans('user::permission.placeholder.name'))!!}
-               </div>
-
-               <div class='col-md-4 col-sm-6'>{!! Former::text('readable_name')
-               -> label(trans('user::permission.label.readable_name'))
-               -> placeholder(trans('user::permission.placeholder.readable_name'))!!}
-               </div>
-        </div>
+                @include('user::admin.permission.partial.entry')
             </div>
         </div>
     </div>
@@ -41,11 +30,11 @@
 </div>
 <script type="text/javascript">
 (function ($) {
-    $('#btnSave').click(function(){
+    $('#btn-save').click(function(){
         $('#create-user-permission').submit();
     });
-    $('#btnCancel').click(function(){
-        $('#entry').load('{{URL::to('admin/user/permission/0')}}');
+    $('#btn-cancel').click(function(){
+        $('#entry-permission').load('{{URL::to('admin/user/permission/0')}}');
     });
     $('#create-user-permission')
     .submit( function( e ) {
@@ -62,8 +51,8 @@
             contentType: false,
             success:function(data, textStatus, jqXHR)
             {
-                $('#main_list').DataTable().ajax.reload( null, false );
-                $('#entry').load('{{URL::to('admin/user/permission')}}/' + data.id);
+                $('#main-list').DataTable().ajax.reload( null, false );
+                $('#entry-permission').load('{{URL::to('admin/user/permission')}}/' + data.id);
             },
             error: function(jqXHR, textStatus, errorThrown)
             {

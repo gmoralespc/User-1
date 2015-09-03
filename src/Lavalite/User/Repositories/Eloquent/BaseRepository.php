@@ -270,7 +270,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function create(array $attributes)
     {
 
-        $model = $this->model->newInstance($attributes);
+        $model = $this->model->newInstance();
+        $model->fill($attributes);
         $model->save();
         $this->resetModel();
 
@@ -280,7 +281,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Update a entity in modal by id
      *
-     * @throws ValidatorException
      * @param array $attributes
      * @param $id
      * @return mixed

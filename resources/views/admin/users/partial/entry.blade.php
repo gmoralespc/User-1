@@ -9,14 +9,6 @@
             -> label(trans('user::user.label.email'))
             -> placeholder(trans('user::user.placeholder.email')) !!}
         </div>
-        <div class='col-md-3 col-sm-4'>{!! Former::password('password')
-            -> label(trans('user::user.label.password'))
-            -> placeholder(trans('user::user.placeholder.password')) !!}
-        </div>
-        <div class='col-md-3 col-sm-4'>{!! Former::text('activated')
-            -> label(trans('user::user.label.activated'))
-            -> placeholder(trans('user::user.placeholder.activated')) !!}
-        </div>
         <div class='col-md-3 col-sm-4'>{!! Former::text('first_name')
             -> label(trans('user::user.label.first_name'))
             -> placeholder(trans('user::user.placeholder.first_name')) !!}
@@ -74,18 +66,13 @@
             -> label(trans('user::user.label.country'))
             -> placeholder(trans('user::user.placeholder.country')) !!}
         </div>
-        <div class='col-md-3 col-sm-4'>{!! Former::text('photo')
+        <div class='col-md-3 col-sm-4'>{!! Former::file('photo')
             -> label(trans('user::user.label.photo'))
             -> placeholder(trans('user::user.placeholder.photo')) !!}
         </div>
         <div class='col-md-3 col-sm-4'>{!! Former::url('web')
             -> label(trans('user::user.label.web'))
             -> placeholder(trans('user::user.placeholder.web')) !!}
-        </div>
-        <div class='col-md-3 col-sm-4'>{!! Former::select('type')
-            -> options(trans('user::user.options.type'))
-            -> label(trans('user::user.label.type'))
-            -> placeholder(trans('user::user.placeholder.type')) !!}
         </div>
     </div>
 </div>
@@ -122,7 +109,7 @@
                         <td>{{ucfirst($keyPermission)}}</td>
                         <td>
                             @forelse($permission as $key => $val)
-                                &nbsp; <input name="permissions[{{ $keyPermission. ' ' .$key }}]" type="checkbox" {{ ($user->can($keyPermission. ' ' .$key)) ? 'checked' : '' }} > {{$val}}
+                                &nbsp; <input name="permissions[{{ $keyPermission. '.' .$key }}]" type="checkbox" {{ ($user->can($keyPermission. ' ' .$key)) ? 'checked' : '' }} > {{$val}}
                             @empty
                                 No permissions assigned
                             @endforelse

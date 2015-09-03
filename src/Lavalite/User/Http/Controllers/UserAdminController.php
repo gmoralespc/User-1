@@ -5,7 +5,6 @@ namespace Lavalite\User\Http\Controllers;
 use User;
 
 use Former;
-use Session;
 use Redirect;
 
 use Lavalite\User\Http\Requests\ViewUserRequest;
@@ -27,13 +26,12 @@ class UserAdminController extends AdminController
 
     public function index(ViewUserRequest $request)
     {
-        Session::forget('parent');
         return $this->theme->of('user::admin.users.index')->render();
     }
 
-    public function lists(ViewUserRequest $request)
+    public function lists(ViewUserRequest $request, $role = null)
     {
-        $array = $this->model->json(config('user.user.listfields'));
+        $array = $this->model->json($role, config('user.user.listfields'));
         return array('data' => $array);
     }
 
@@ -80,7 +78,7 @@ class UserAdminController extends AdminController
     {
 
         try {
-            $row = $this->model->update($id, $request->all());
+            $row = $this->model->update($request->all(), $id);
             return $this->response(201, 'User updated sucessfully', $id);
         } catch (Exception $e) {
             return $this->response(401, $e->getMessage(), $id);

@@ -295,6 +295,70 @@ class User {
 	}
 
 	/**
+	 * Attache a role to the user.
+	 *
+	 * @param Authenticable $user
+	 * @param string $roleName
+	 *
+	 * @return void
+	 */
+	public function attachRole(Authenticable $user, $roleName)
+	{
+	    $role = Defender::findRole($roleName);
+	    $user->attachRole($role);
+
+	}
+
+	/**
+	 * Attache a role to the user.
+	 *
+	 * @param Authenticable $user
+	 * @param string $roleName
+	 *
+	 * @return void
+	 */
+	public function attachPermission(Authenticable $user, $permissionName)
+	{
+	    $permission = Defender::findPermission($permissionName);
+
+	    $user->attachPermission($permission, [
+	        'value' => true
+    	]);
+
+	}
+
+	/**
+	 * Attache a role to the user.
+	 *
+	 * @param Authenticable $user
+	 * @param string $roleName
+	 *
+	 * @return void
+	 */
+	public function detachRole(Authenticable $user, $roleName)
+	{
+	    $role = Defender::findRole($roleName);
+	    $user->detachRole($role);
+
+	}
+
+	/**
+	 * Attache a role to the user.
+	 *
+	 * @param Authenticable $user
+	 * @param string $roleName
+	 *
+	 * @return void
+	 */
+	public function detachPermission(Authenticable $user, $permissionName)
+	{
+	    $permission = Defender::findPermission($permissionName);
+
+	    $user->detachPermission($permission);
+
+	}
+
+	/**
 	 * Returns the specific details of current user.
 	 *
 	 * @return mixed
@@ -327,7 +391,8 @@ class User {
 
 		$array = array();
 		foreach ($result as $key => $value) {
-		  array_set($array, $key, $value);
+			$key = explode('.', $key, 2);
+			$array[$key[0]][$key[1]] = $value;
 		}
 		return $array;
 

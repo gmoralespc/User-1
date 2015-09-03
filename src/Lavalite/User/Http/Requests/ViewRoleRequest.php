@@ -1,4 +1,6 @@
-<?php namespace Lavalite\User\Http\Requests;
+<?php
+
+namespace Lavalite\User\Http\Requests;
 
 use App\Http\Requests\Request;
 use User;
@@ -12,7 +14,7 @@ class ViewRoleRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return User::canAny(['role.view']);
+		return User::can(['role.view']);
 	}
 
 	/**

@@ -1,4 +1,6 @@
-<?php namespace Lavalite\User\Interfaces;
+<?php
+
+namespace Lavalite\User\Interfaces;
 
 interface PermissionRepositoryInterface
 {

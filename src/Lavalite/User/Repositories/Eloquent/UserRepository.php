@@ -16,17 +16,26 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     /**
-     * Boots the user repository
+     * Retrive users list based on role
      *
-     * @return void
+     * @param string $role
+     * @param array $columns
+     * @return mixed
      */
-    public function boot()
+    public function json($role = NULL, $columns = array('*'))
     {
-        $this->model->fillable             = config('user.user.fillable');
-        $this->model->uploads              = config('user.user.uploadable');
-        $this->model->uploadRootFolder     = config('user.user.upload_root_folder');
-        $this->model->table                = config('user.user.table');
-    }
+        $results = $this->model->with(['roles' => function($query) use ($role){
+            if (is_null($role))
+                return $query;
 
+            return $query->where('roles.name', '=', $role);
+
+        }])->get($columns)->toArray();
+
+        $this->resetModel();
+        foreach ($results as $key => $val)
+            $results[$key] = array_dot($val);
+        return $results;
+    }
 
 }

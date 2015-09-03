@@ -157,10 +157,8 @@ return array(
                         "web"               => 'Enter Web',
                         "minutes"           => 'Minutes',
                         ),
-    'user'       =>  array(
 
                         "name"              => 'User',
                         "names"             => 'Users'
-                        ),
 
 );

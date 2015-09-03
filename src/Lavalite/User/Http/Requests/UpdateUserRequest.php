@@ -22,8 +22,10 @@ class UpdateUserRequest extends Request {
 	 */
 	public function rules()
 	{
+		if(!Request::isMethod('PUT')) return [];
+
 		return [
-			//
+			'name' => 'required',
 		];
 	}
 

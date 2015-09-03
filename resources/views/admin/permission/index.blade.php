@@ -15,93 +15,44 @@
 @stop
 
 @section('entry')
-<div class="box box-warning" id='entry'>
+<div class="box box-warning" id='entry-permission'>
 </div>
 @stop
 
 @section('tools')
-<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" id="btnDelete"><i class="fa fa-times-circle"></i> Delete</button>
 @stop
 
 @section('content')
-<table id="main_list" class="table table-striped table-bordered">
-    <tr>
-        <th width="20"><input type="checkbox" name="checkall" id="checkall" class="checkbox" value="all"></th>
+<table id="main-list" class="table table-striped table-bordered">
+    <thead>
         <th>{!! trans('user::permission.label.name')!!}</th>
-    </tr>
+    </thead>
 </table>
 @stop
 @section('script')
 <script type="text/javascript">
+
 var oTable;
 $(document).ready(function(){
-    $('#entry').load('{{URL::to('admin/user/permission/0')}}');
-    oTable = $('#main_list').dataTable( {
+    $('#entry-permission').load('{{URL::to('admin/user/permission/0')}}');
+    oTable = $('#main-list').dataTable( {
         "ajax": '{{ URL::to('/admin/user/permission/list') }}',
         "columns": [
-        { "data": "id" },
         { "data": "name" },],
-        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
-            $('td:eq(0)', nRow).html( '<input type="checkbox" name="ids[]" id="ids_'+ aData.id +'" class="checkRow" value="'+ aData.id+'">');
-        },
-        "aoColumnDefs": [
-              { 'bSortable': false, 'aTargets': [0] }
-           ],
-        "order": [[ 1, "asc" ]],
         "permissionLength": 50
     });
 
-    $('#main_list tbody').on( 'click', 'tr', function () {
-        $(this).toggleClass('selected');
+    $('#main-list tbody').on( 'click', 'tr', function () {
+        $(this).toggleClass("selected").siblings(".selected").removeClass("selected");
 
-        var d = $('#main_list').DataTable().row( this ).data();
+        var d = $('#main-list').DataTable().row( this ).data();
 
-        $('#entry').load('{{URL::to('admin/user/permission')}}' + '/' + d.id, function( response, status, xhr ) {
-          if ( status == "error" ) {
-            toastr.error(xhr.status + " " + xhr.statusText, 'Error');
-          }
-        });
-
-        if ( $(this).hasClass('selected') ) {
-            $("#ids_"+d.id).prop('checked', true);
-        } else {
-            $("#ids_"+d.id).prop('checked', false);
-        }
+        $('#entry-permission').load('{{URL::to('admin/user/permission')}}' + '/' + d.id);
 
     });
-
-    $("#checkall").click(function(e){
-      $("#main_list :checkbox").prop('checked', $("#checkall").is(':checked'));
-
-      if ($("#checkall").is(':checked')){
-        $("#main_list tr").addClass('selected');
-        $.each($("#main_list :checkbox"), function(){
-          arrayids.push(parseInt($(this).val()));
-          id = parseInt($(this).val());
-        });
-        $('#form-div').load('/permission/'+id);
-
-      } else {
-        arrayids = [];
-        id = 0;
-        $("#main_list tr").removeClass('selected');
-        $('#form-div').load('/permission/0');
-      }
-    });
-
-    $('#btnDelete').click(function(){
-        toastr.warning('Are you shure you want to delete the permissions? <br><div class="pull-right"><button type="button" id="confirmDelete" class="btn btn-danger btn-xs">Yes</button> <button type="button" id="btnClose" class="btn btn-danger btn-xs">No</button></div>', 'Delete permission(s)!');
-    });
-
 });
 </script>
 @stop
 
 @section('style')
 @stop
-
-
-
-
-
-

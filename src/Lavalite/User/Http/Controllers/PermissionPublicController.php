@@ -1,45 +1,47 @@
-<?php namespace Lavalite\User\Controllers;
+<?php
 
-use App;
-use Lang;
-use Input;
-use Sentry;
-use Config;
+namespace Lavalite\Permission\Http\Controllers;
 
-class PublicController extends \PublicController
+use App\Http\Controllers\PublicController as CMSPublicController;
+
+class PublicController extends CMSPublicController
 {
-
     /**
-     * permission instance.
+     * Constructor
+     * @param type \Lavalite\Permission\Interfaces\PermissionRepositoryInterface $permission
      *
-     * @var \Permissions\permission\Permissions
+     * @return type
      */
-    protected $permission;
-
-
-    public function __construct(\Lavalite\User\Interfaces\PermissionInterface $permission)
+    public function __construct(\Lavalite\Permission\Interfaces\PermissionRepositiryInterface $permission)
     {
-        $this->permission      = $permission;
+        $this->model = $permission;
         parent::__construct();
     }
 
-    public function index()
+    /**
+     * Show permission's list
+     *
+     * @param string $slug
+     *
+     * @return response
+     */
+    protected function index($slug)
     {
+        $data['permission'] = $this->model->all();
 
-        $permissions   =  $this->permission->paginate(10);
-        $this->theme->prependTitle(trans('user::permission.names') . ' :: ');
-        return $this->theme->of('user::permission.index',compact(permissions))->render();
+        return $this->theme->of('user::public.permission.index', $data)->render();
     }
 
-
-
-    public function show($slug)
+    /**
+     * Show permission
+     * @param string $slug
+     *
+     * @return response
+     */
+    protected function show($slug)
     {
-        $data['permission']   = $this->permission->findBySlug($slug);
+        $data['permission'] = $this->model->getPermission($slug);
 
-        $this->theme->prependTitle(trans('user::permission.names') . ' :: ');
-
-        return $this->theme->of('user::permission.show', $data)->render();
+        return $this->theme->of('user::public.permission.show', $data)->render();
     }
-
 }

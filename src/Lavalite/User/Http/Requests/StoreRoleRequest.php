@@ -1,4 +1,6 @@
-<?php namespace Lavalite\User\Http\Requests;
+<?php
+
+namespace Lavalite\User\Http\Requests;
 
 use App\Http\Requests\Request;
 use User;
@@ -12,7 +14,7 @@ class StoreRoleRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return User::canAny(['role.create']);
+		return User::can(['role.create']);
 	}
 
 	/**
@@ -22,8 +24,10 @@ class StoreRoleRequest extends Request {
 	 */
 	public function rules()
 	{
+		if(!Request::isMethod('POST')) return [];
+
 		return [
-			//
+			'name' => 'required',
 		];
 	}
 

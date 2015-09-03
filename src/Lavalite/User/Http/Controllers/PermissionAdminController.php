@@ -1,110 +1,154 @@
-<?php namespace Lavalite\User\Http\Controllers;
-use Lavalite\User\Models\Permission as Permission;
+<?php
+
+namespace Lavalite\User\Http\Controllers;
 
 use Former;
-use Session;
-use Redirect;
+use Response;
+use App\Http\Controllers\AdminController as AdminController;
 
 use Lavalite\User\Http\Requests\ViewPermissionRequest;
 use Lavalite\User\Http\Requests\UpdatePermissionRequest;
 use Lavalite\User\Http\Requests\StorePermissionRequest;
 use Lavalite\User\Http\Requests\DeletePermissionRequest;
 
-use App\Http\Controllers\AdminController as AdminController;
+use Lavalite\User\Interfaces\PermissionRepositoryInterface;
+
+/**
+ *
+ * @package Permissions
+ */
 
 class PermissionAdminController extends AdminController
 {
 
-    public function __construct(\Lavalite\User\Interfaces\PermissionRepositoryInterface $permission)
+    /**
+     * Initialize permission controller
+     * @param type PermissionRepositoryInterface $permission
+     * @return type
+     */
+    public function __construct(PermissionRepositoryInterface $permission)
     {
-        $this->model    = $permission;
-
+        $this->model = $permission;
         parent::__construct();
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
     public function index(ViewPermissionRequest $request)
     {
-        Session::forget('parent');
+        $this->theme->prependTitle(trans('user::permission.names').' :: ');
+
         return $this->theme->of('user::admin.permission.index')->render();
     }
 
+    /**
+     * Return list of permission as json.
+     *
+     * @param  Request  $request
+     *
+     * @return Response
+     */
     public function lists(ViewPermissionRequest $request)
     {
-        $array = $this->model->json();
-        foreach ($array as $key => $row){
-            $array[$key]    = array_only($row, config('user.permission.listfields'));
-        }
+        $array = $this->model->json(config('user.permission.listfields'));
+
         return array('data' => $array);
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  Request  $request
+     * @param  int  $id
+     *
+     * @return Response
+     */
     public function show(ViewPermissionRequest $request, $id)
     {
-        $permission   = $this->model->findOrNew($id);
+        $permission = $this->model->findOrNew($id);
+
         Former::populate($permission);
+
         return view('user::admin.permission.show', compact('permission'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
     public function create(StorePermissionRequest $request)
     {
-        $permission   = $this->model->findOrNew(0);
+        $permission = $this->model->findOrNew(0);
         Former::populate($permission);
-        return  view('user::admin.permission.create', compact('permission'));
+
+        return view('user::admin.permission.create', compact('permission'));
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
     public function store(StorePermissionRequest $request)
     {
-
-        try {
-            $this->model->create($request->all());
-            return $this->response(201, 'Permission created sucessfully', $row->id);
-       } catch (Exception $e) {
-            return $this->response(401, $e->getMessage(), $id);
-        }
-    }
-
-    public function edit(UpdatePermissionRequest $request, $id)
-    {
-
-        $permission       = $this->model->find($id);
-        Former::populate($permission);
-        return  view('user::admin.permission.edit', compact('permission'));
-    }
-
-    public function update(UpdatePermissionRequest $request, $id)
-    {
-
-        try {
-            $row = $this->model->update($id, $request->all());
-            return $this->response(201, 'Permission updated sucessfully', $id);
-        } catch (Exception $e) {
-            return $this->response(401, $e->getMessage(), $id);
-        }
-
-
-    }
-
-    public function destroy(DeletePermissionRequest $request, $id)
-    {
-        try {
-            $this->model->delete($id);
-            return $this->response(201, 'Permission deleted sucessfully', $row->id);
-        } catch (Exception $e) {
-            return $this->response(401, $e->getMessage(), $row->id);
+        if ($this->model->create($request->all())) {
+            return Response::json(['message' => 'Permission created sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
+        } else {
+            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
         }
     }
 
     /**
-     * undocumented function
+     * Show the form for editing the specified resource.
      *
-     * @return void
-     * @author
-     **/
-    public function response($code, $message, $id)
+     * @param  Request  $request
+     * @param  int  $id
+     * @return Response
+     */
+    public function edit(UpdatePermissionRequest $request, $id)
     {
-        return Response::json(array(
-                    'code'      => $code,
-                    'id'        => $id,
-                    'message'   => $message
-                ), $code);
+        $permission = $this->model->find($id);
+
+        Former::populate($permission);
+
+        return view('user::admin.permission.edit', compact('permission'));
+    }
+
+    /**
+     * Update the specified resource.
+     *
+     * @param  Request  $request
+     * @param  int  $id
+     * @return Response
+     */
+    public function update(UpdatePermissionRequest $request, $id)
+    {
+        if ($row = $this->model->update($request->all(), $id)) {
+            return Response::json(['message' => 'Permission updated sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
+        } else {
+            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+        }
+    }
+
+    /**
+     * Remove the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroy(DeletePermissionRequest $request, $id)
+    {
+        try {
+            $this->model->delete($id);
+            return Response::json(['message' => 'Permission deleted sucessfully'.$id, 'type' => 'success', 'title' => 'Success'], 201);
+        } catch (Exception $e) {
+            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+        }
     }
 }

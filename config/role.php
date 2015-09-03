@@ -1,9 +1,9 @@
 <?php
-  return ['permission' => [
-                    'Name'          => 'Permission',
-                    'name'          => 'permission',
-                    'table'         => 'permissions',
-                    'model'         => 'Lavalite\User\Models\Permission',
+ return ['role' => [
+                    'Name'          => 'Role',
+                    'name'          => 'role',
+                    'table'         => 'roles',
+                    'model'         => 'Lavalite\User\Models\Role',
                     'permissions'   => ['view', 'create', 'edit', 'delete'],
                     'image'         =>
                         [
@@ -13,14 +13,13 @@
                         'lg'        => ['width' =>'800',    'height' =>'600'],
                         'xl'        => ['width' =>'1000',   'height' =>'750'],
                         ],
-                    'fillable'          =>  ['id', 'name', 'readable_name', 'created_at', 'updated_at'],
-                    'listfields'        =>  ['id', 'name', 'readable_name', 'created_at', 'updated_at'],
-                    'translatable'      =>  ['id', 'name', 'readable_name', 'created_at', 'updated_at'],
-                    'upload-folder'     =>  '/uploads/permissions',
+                    'fillable'          =>  ['id', 'name', 'created_at', 'updated_at'],
+                    'listfields'        =>  ['id', 'name', 'created_at', 'updated_at'],
+                    'translatable'      =>  ['id', 'name', 'created_at', 'updated_at'],
+                    'upload-folder'     =>  '/uploads/user/role',
                     'uploadable'        =>  [
                                                 'single' => [],
                                                 'multiple' => []
                                             ],
 
                     ]];
-

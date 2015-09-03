@@ -1,4 +1,6 @@
-<?php namespace Lavalite\User\Http\Requests;
+<?php
+
+namespace Lavalite\User\Http\Requests;
 
 use App\Http\Requests\Request;
 use User;
@@ -12,8 +14,7 @@ class DeletePermissionRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return User::canAny
-(['permission.delete']);
+		return User::can(['permission.delete']);
 	}
 
 	/**

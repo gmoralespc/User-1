@@ -1,7 +1,7 @@
-<?php namespace Lavalite\User\Models;
+<?php
 
-use Str;
-use Config;
+namespace Lavalite\User\Models;
+
 use Lavalite\Filer\FilerTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,15 +11,29 @@ class Permission extends Model
     use FilerTrait;
 
 
-    protected $table        = 'permissions';
+    /**
+     * Initialiaze page modal
+     *
+     * @param $name
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->initialize();
+    }
 
-    protected $module       = 'permission';
-
-    protected $package      = 'user';
-
-
-    protected $fillable = ['name', 'readable_name'];
-
+    /**
+     * Initialize the modal variables.
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+        $this->fillable             = config('user.permission.fillable');
+        $this->uploads              = config('user.permission.uploadable');
+        $this->uploadRootFolder     = config('user.permission.upload_root_folder');
+        $this->table                = config('user.permission.table');
+    }
 
 
 }

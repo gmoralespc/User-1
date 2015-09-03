@@ -1,4 +1,6 @@
-<?php namespace Lavalite\User\Http\Requests;
+<?php
+
+namespace Lavalite\User\Http\Requests;
 
 use App\Http\Requests\Request;
 use User;
@@ -12,7 +14,7 @@ class UpdateRoleRequest extends Request {
 	 */
 	public function authorize()
 	{
-		return User::canAny(['role.edit']);
+		return User::can(['role.edit']);
 	}
 
 	/**
@@ -22,8 +24,10 @@ class UpdateRoleRequest extends Request {
 	 */
 	public function rules()
 	{
+		if(!Request::isMethod('PUT')) return [];
+
 		return [
-			//
+			'name' => 'required',
 		];
 	}
 

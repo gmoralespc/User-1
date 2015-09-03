@@ -1,8 +1,8 @@
 <div class="box-header with-border">
-    <h3 class="box-title"> Edit  user [{!!$user->first_name . ' ' . $user->last_name!!}] </h3>
+    <h3 class="box-title"> Edit  user [{!!$user->name!!}] </h3>
     <div class="box-tools pull-right">
-        <button type="button" class="btn btn-primary btn-sm" id="btnSave"><i class="fa fa-floppy-o"></i> Save</button>
-        <button type="button" class="btn btn-default btn-sm" id="btnClose"><i class="fa fa-times-circle"></i> Close</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-save"><i class="fa fa-floppy-o"></i> Save</button>
+        <button type="button" class="btn btn-default btn-sm" id="btn-close"><i class="fa fa-times-circle"></i> Close</button>
         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
     </div>
 </div>
@@ -10,15 +10,15 @@
     <div class="nav-tabs-custom">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs primary">
-          @include('user::admin.users.partials.tabs')
+                @include('user::admin.users.partial.tabs')
         </ul>
         {!!Former::vertical_open()
-        ->id('formEntry')
+        ->id('edit-user')
         ->method('PUT')
         ->enctype('multipart/form-data')
         ->action(URL::to('admin/user/user/'. $user['id']))!!}
         <div class="tab-content">
-          @include('user::admin.users.partials.contents')
+                @include('user::admin.users.partial.entry')
         </div>
         {!!Former::close()!!}
     </div>
@@ -27,18 +27,19 @@
     &nbsp;
 </div>
 <script type="text/javascript">
+
         (function ($) {
-            $('#btnClose').click(function(){
-                $('#entry').load('{!!URL::to('admin/user/user')!!}/{!!$user->id!!}');
+            $('#btn-close').click(function(){
+                $('#entry-user').load('{{URL::to('admin/user/user')}}/{{$user->id}}');
             });
 
-            $('#btnSave').click(function(){
-                $('#formEntry').submit();
+            $('#btn-save').click(function(){
+                $('#edit-user').submit();
             });
 
-            $('#formEntry')
+            $('#edit-user')
             .submit( function( e ) {
-                var formURL  = "{!!URL::to('admin/user/user')!!}/{!!@$user->id!!}";
+                var formURL  = "{{ URL::to('admin/user/user/')}}/{{@$user->id}}";
                 $.ajax( {
                     url: formURL,
                     type: 'POST',
@@ -47,19 +48,16 @@
                     contentType: false,
                     success:function(data, textStatus, jqXHR)
                     {
-                        toastr.success('{User} updated successfuly.', 'Success');
-                        $('#entry').load('{!!URL::to('admin/user')!!}/{!!$user->id!!}');
-                        $('#main_list').DataTable().ajax.reload( null, false );
+                        $('#entry-user').load('{{URL::to('admin/user/user')}}/{{$user->id}}');
+                        $('#main-list').DataTable().ajax.reload( null, false );
                     },
                     error: function(jqXHR, textStatus, errorThrown)
                     {
-                        toastr.error(errorThrown, 'Error');
-                        console.log(jqXHR);
-                        console.log(textStatus);
-                        console.log(errorThrown);
                     }
                 });
                 e.preventDefault();
             });
+
         }(jQuery));
+
 </script>
