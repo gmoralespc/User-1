@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "artesaos/defender": "dev-master",
+        "artesaos/defender": "~0.4.2",
         "laravel/socialite": "^3.0@dev"
     },
     "autoload": {

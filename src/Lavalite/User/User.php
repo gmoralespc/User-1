@@ -11,6 +11,7 @@
 
 use Theme;
 use Auth;
+use Former;
 use URL;
 use Artesaos\Defender\Facades\Defender as Defender;
 
@@ -153,7 +154,7 @@ class User {
 	public function can($permission)
 	{
 		if (is_string($permission))
-			return Defender::can($permission);
+			return Defender::canDo($permission);
 
 		if (is_array($permission))
 			return $this->canAny($permission);
@@ -171,7 +172,7 @@ class User {
 	{
 		if (is_array($permissions) and count($permissions) > 0) {
             foreach ($permissions as $permission) {
-                if(Defender::can($permission)) return true;
+                if(Defender::canDo($permission)) return true;
             }
         }
         return false;
@@ -392,11 +393,34 @@ class User {
 		$array = array();
 		foreach ($result as $key => $value) {
 			$key = explode('.', $key, 2);
-			$array[$key[0]][$key[1]] = $value;
+			@$array[$key[0]][$key[1]] = $value;
 		}
 		return $array;
 
 	}
+
+    /**
+     * Return the profile update page.
+     *
+     * @return Response
+     */
+    public function profile($mode)
+    {
+        $user = $this->user->find(User::users('id'));
+        Former::populate($user);
+        return view('user::admin.users.profile', compact('user'));
+    }
+
+    /**
+     * Return change password form.
+     *
+     * @return Response
+     */
+    public function password($mode)
+    {
+        $user = $this->user->find(User::users('id'));
+        return view('user::admin.users.password', compact('user'));
+    }
 
 
 }

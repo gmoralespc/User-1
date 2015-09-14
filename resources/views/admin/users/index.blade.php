@@ -20,8 +20,7 @@
 @section('content')
 <table id="main-list" class="table table-striped table-bordered">
     <thead>
-        <th>{!! trans('user::user.label.first_name')!!}</th>
-        <th>{!! trans('user::user.label.last_name')!!}</th>
+        <th>{!! trans('user::user.label.name')!!}</th>
         <th>{!! trans('user::user.label.email')!!}</th>
         <th>{!! trans('user::user.label.sex')!!}</th>
         <th>{!! trans('user::user.label.designation')!!}</th>
@@ -36,8 +35,7 @@ $(document).ready(function(){
     oTable = $('#main-list').dataTable( {
         "ajax": '{{ URL::to('/admin/user/user/list') }}',
         "columns": [
-        { "data": "first_name" },
-        { "data": "last_name" },
+        { "data": "name" },
         { "data": "email" },
         { "data": "sex" },
         { "data": "designation" },],

@@ -2,113 +2,201 @@
 
 namespace Lavalite\User\Http\Controllers;
 
-use User;
-
 use Former;
-use Redirect;
-
-use Lavalite\User\Http\Requests\ViewUserRequest;
-use Lavalite\User\Http\Requests\UpdateUserRequest;
-use Lavalite\User\Http\Requests\StoreUserRequest;
-use Lavalite\User\Http\Requests\DeleteUserRequest;
-
+use Response;
+use Illuminate\Http\Request as Requests;
+use Request;
+use User;
 use App\Http\Controllers\AdminController as AdminController;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Password;
+
+use Lavalite\User\Http\Requests\UserRequest;
+
+use Lavalite\User\Interfaces\UserRepositoryInterface;
+
+/**
+ *
+ * @package Users
+ */
 
 class UserAdminController extends AdminController
 {
 
-    public function __construct(\Lavalite\User\Interfaces\UserRepositoryInterface $user)
+    /**
+     * Initialize user controller
+     * @param type UserRepositoryInterface $user
+     * @return type
+     */
+    public function __construct(UserRepositoryInterface $user)
     {
-        $this->model    = $user;
-
+        $this->model = $user;
         parent::__construct();
     }
 
-    public function index(ViewUserRequest $request)
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index(UserRequest $request)
     {
+        $this->theme->prependTitle(trans('user::user.names').' :: ');
+
         return $this->theme->of('user::admin.users.index')->render();
     }
 
-    public function lists(ViewUserRequest $request, $role = null)
+    /**
+     * Return list of user as json.
+     *
+     * @param  Request  $request
+     *
+     * @return Response
+     */
+    public function lists(UserRequest $request)
     {
-        $array = $this->model->json($role, config('user.user.listfields'));
+        $array = $this->model->json(config('user.user.listfields'));
+
         return array('data' => $array);
     }
 
-    public function show(ViewUserRequest $request, $id)
+    /**
+     * Display the specified resource.
+     *
+     * @param  Request  $request
+     * @param  int  $id
+     *
+     * @return Response
+     */
+    public function show(UserRequest $request, $id)
     {
-        $user   = $this->model->findOrNew($id);
+        $user = $this->model->findOrNew($id);
+        Former::populate($user);
+
         $roles  = User::roles();
         $permissions  = User::permissions(true);
-        Former::populate($user);
+
         return view('user::admin.users.show', compact('user', 'roles', 'permissions'));
     }
 
-    public function create(StoreUserRequest $request)
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function create(UserRequest $request)
     {
-        $user   = $this->model->findOrNew(0);
-        $roles  = User::roles();
+        $user = $this->model->findOrNew(0);
         $permissions  = User::permissions(true);
-        Former::populate($user);
-        return  view('user::admin.users.create', compact('user', 'roles', 'permissions'));
-    }
-
-    public function store(StoreUserRequest $request)
-    {
-
-        try {
-            $this->model->create($request->all());
-            return $this->response(201, 'User created sucessfully', $row->id);
-       } catch (Exception $e) {
-            return $this->response(401, $e->getMessage(), $id);
-        }
-    }
-
-    public function edit(UpdateUserRequest $request, $id)
-    {
-
-        $user       = $this->model->find($id);
         $roles  = User::roles();
-        $permissions  = User::permissions(true);
         Former::populate($user);
-        return  view('user::admin.users.edit', compact('user', 'roles', 'permissions'));
+
+        return view('user::admin.users.create', compact('user', 'roles', 'permissions'));
     }
 
-    public function update(UpdateUserRequest $request, $id)
+    /**
+     * Display the specified resource.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function store(UserRequest $request)
     {
 
-        try {
-            $row = $this->model->update($request->all(), $id);
-            return $this->response(201, 'User updated sucessfully', $id);
-        } catch (Exception $e) {
-            return $this->response(401, $e->getMessage(), $id);
-        }
-
-
-    }
-
-    public function destroy(DeleteUserRequest $request, $id)
-    {
-        try {
-            $this->model->delete($id);
-            return $this->response(201, 'User deleted sucessfully', $row->id);
-        } catch (Exception $e) {
-            return $this->response(401, $e->getMessage(), $row->id);
+        if ($row = $this->model->create($request->all())) {
+            return Response::json(['message' => 'User created sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
+        } else {
+            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
         }
     }
 
     /**
-     * undocumented function
+     * Show the form for editing the specified resource.
      *
-     * @return void
-     * @author
-     **/
-    public function response($code, $message, $id)
+     * @param  Request  $request
+     * @param  int  $id
+     * @return Response
+     */
+    public function edit(UserRequest $request, $id)
     {
-        return Response::json(array(
-                    'code'      => $code,
-                    'id'        => $id,
-                    'message'   => $message
-                ), $code);
+        $user = $this->model->find($id);
+
+        Former::populate($user);
+        $roles  = User::roles();
+        $permissions  = User::permissions(true);
+        return view('user::admin.users.edit', compact('user', 'roles', 'permissions'));
     }
+
+    /**
+     * Update the specified resource.
+     *
+     * @param  Request  $request
+     * @param  int  $id
+     * @return Response
+     */
+    public function update(UserRequest $request, $id)
+    {
+        if ($row = $this->model->update($request->all(), $id)) {
+            return Response::json(['message' => 'User updated sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
+        } else {
+            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+        }
+    }
+
+    /**
+     * Remove the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroy(UserRequest $request, $id)
+    {
+        try {
+            $this->model->delete($id);
+            return Response::json(['message' => 'User deleted sucessfully'.$id, 'type' => 'success', 'title' => 'Success'], 201);
+        } catch (Exception $e) {
+            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+        }
+    }
+
+    /**
+     * Update profile of logged user.
+     *
+     * @return Response
+     */
+    public function updateProfile(Authenticatable $user)
+    {
+        $id = $user->id;
+        if ($row = $this->model->update(Request::all(), $id)) {
+            return Response::json(['message' => 'Profile updated sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
+        } else {
+            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+        }
+    }
+
+    /**
+     * Reset the given user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function changePassword(Authenticatable $user, Requests $request)
+    {
+        $this->validate($request, [
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        $password   = $request->get('password');
+
+        $user->password = bcrypt($password);
+
+        if ($user->save()) {
+            return Response::json(['message' => 'Password changed sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
+        } else {
+            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+        }
+
+    }
+
 }

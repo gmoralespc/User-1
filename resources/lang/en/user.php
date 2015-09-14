@@ -94,12 +94,12 @@ return array(
     'options'       =>  array(
                         "sex"    => array('male' => 'Male','female' => 'Female'),
                         "type"    => array('admin' => 'Admin','user' => 'User','superuser' => 'Super user'),
-                        "parent"        => array('1'),
+                        "reporting_to"        => array('1'),
                         "department"        => array('marketing' => 'Marketing', 'accounts' => 'Accounts', 'store' => 'Store'),
                         ),
 
     'label'       =>  array(
-                        "parent"            => "Reporting to",
+                        "reporting_to"            => "Reporting to",
                         "designation"       => "Designation",
                         "department"        => "Department",
                         "name"              => 'Name',
@@ -131,7 +131,7 @@ return array(
 
     'placeholder'       =>  array(
 
-                        "parent"             => "Select",
+                        "reporting_to"      => "Select",
                         "email"             => 'Enter E-mail Address',
                         "name"              => 'Enter Name',
                         "department"        => "Department",

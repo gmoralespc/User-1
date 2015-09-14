@@ -74,21 +74,6 @@ class UserServiceProvider extends ServiceProvider {
     private function publishResources()
     {
         $this->publishes([__DIR__.'/../../../../config/config.php' => config_path('user.php')], 'config');
-
-        // Merge permission module to user package config
-        $this->mergeConfigFrom(
-                __DIR__.'/../../../../config/permission.php', 'user'
-        );
-
-        // Merge role module to user package config
-        $this->mergeConfigFrom(
-                __DIR__.'/../../../../config/role.php', 'user'
-        );
-
-        // Merge user module to user package config
-        $this->mergeConfigFrom(
-                __DIR__.'/../../../../config/user.php', 'user'
-        );
     }
 
     /**

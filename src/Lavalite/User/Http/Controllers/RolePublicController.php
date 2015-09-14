@@ -6,6 +6,7 @@ use App\Http\Controllers\PublicController as CMSPublicController;
 
 class PublicController extends CMSPublicController
 {
+
     /**
      * Constructor
      * @param type \Lavalite\Role\Interfaces\RoleRepositoryInterface $role

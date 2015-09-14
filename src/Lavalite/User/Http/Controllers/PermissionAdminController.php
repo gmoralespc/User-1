@@ -6,11 +6,7 @@ use Former;
 use Response;
 use App\Http\Controllers\AdminController as AdminController;
 
-use Lavalite\User\Http\Requests\ViewPermissionRequest;
-use Lavalite\User\Http\Requests\UpdatePermissionRequest;
-use Lavalite\User\Http\Requests\StorePermissionRequest;
-use Lavalite\User\Http\Requests\DeletePermissionRequest;
-
+use Lavalite\User\Http\Requests\PermissionRequest;
 use Lavalite\User\Interfaces\PermissionRepositoryInterface;
 
 /**
@@ -37,7 +33,7 @@ class PermissionAdminController extends AdminController
      *
      * @return Response
      */
-    public function index(ViewPermissionRequest $request)
+    public function index(PermissionRequest $request)
     {
         $this->theme->prependTitle(trans('user::permission.names').' :: ');
 
@@ -51,9 +47,12 @@ class PermissionAdminController extends AdminController
      *
      * @return Response
      */
-    public function lists(ViewPermissionRequest $request)
+    public function lists(PermissionRequest $request)
     {
-        $array = $this->model->json(config('user.permission.listfields'));
+        $array = $this->model->json();
+        foreach ($array as $key => $row) {
+            $array[$key] = array_only($row, config('user.permission.listfields'));
+        }
 
         return array('data' => $array);
     }
@@ -66,7 +65,7 @@ class PermissionAdminController extends AdminController
      *
      * @return Response
      */
-    public function show(ViewPermissionRequest $request, $id)
+    public function show(PermissionRequest $request, $id)
     {
         $permission = $this->model->findOrNew($id);
 
@@ -81,7 +80,7 @@ class PermissionAdminController extends AdminController
      * @param  Request  $request
      * @return Response
      */
-    public function create(StorePermissionRequest $request)
+    public function create(PermissionRequest $request)
     {
         $permission = $this->model->findOrNew(0);
         Former::populate($permission);
@@ -95,9 +94,9 @@ class PermissionAdminController extends AdminController
      * @param  Request  $request
      * @return Response
      */
-    public function store(StorePermissionRequest $request)
+    public function store(PermissionRequest $request)
     {
-        if ($this->model->create($request->all())) {
+        if ($row = $this->model->create($request->all())) {
             return Response::json(['message' => 'Permission created sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
         } else {
             return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
@@ -111,7 +110,7 @@ class PermissionAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function edit(UpdatePermissionRequest $request, $id)
+    public function edit(PermissionRequest $request, $id)
     {
         $permission = $this->model->find($id);
 
@@ -127,7 +126,7 @@ class PermissionAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function update(UpdatePermissionRequest $request, $id)
+    public function update(PermissionRequest $request, $id)
     {
         if ($row = $this->model->update($request->all(), $id)) {
             return Response::json(['message' => 'Permission updated sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
@@ -142,7 +141,7 @@ class PermissionAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function destroy(DeletePermissionRequest $request, $id)
+    public function destroy(PermissionRequest $request, $id)
     {
         try {
             $this->model->delete($id);

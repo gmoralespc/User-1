@@ -1,8 +1,10 @@
 <?php
 namespace Lavalite\User\Models;
 
+use Lavalite\Filer\FilerTrait;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -11,8 +13,18 @@ use URL;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use HasDefender, Authenticatable, CanResetPassword;
+    use HasDefender, Authenticatable, CanResetPassword, FilerTrait, SoftDeletes;
 
+    protected $dates = ['deleted_at'];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'photo' => 'array',
+    ];
 
     /**
      * Initialiaze page modal
@@ -38,16 +50,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $this->table                = config('user.user.table');
     }
 
-    /**
-     * Name of the user
-     *
-     * @param mixed $value
-     *
-     * @return string
-     */
-    public function getNameAttribute($value){
-        return $this->first_name . ' ' . $this->last_name;
-    }
 
     /**
      * Returns the profile picture of the user.
@@ -66,6 +68,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
         return URL::to('images/avatar/male.png');
 
+    }
+
+    /**
+     * Returns the joined date of the user.
+     *
+     * @return string date
+     */
+    public function getJoinedAttribute()
+    {
+        return $this->created_at->format(config('cms.format.date'));
     }
 
     /**

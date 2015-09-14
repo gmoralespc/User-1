@@ -6,11 +6,7 @@ use Former;
 use Response;
 use App\Http\Controllers\AdminController as AdminController;
 
-use Lavalite\User\Http\Requests\ViewRoleRequest;
-use Lavalite\User\Http\Requests\UpdateRoleRequest;
-use Lavalite\User\Http\Requests\StoreRoleRequest;
-use Lavalite\User\Http\Requests\DeleteRoleRequest;
-
+use Lavalite\User\Http\Requests\RoleRequest;
 use Lavalite\User\Interfaces\RoleRepositoryInterface;
 
 /**
@@ -37,7 +33,7 @@ class RoleAdminController extends AdminController
      *
      * @return Response
      */
-    public function index(ViewRoleRequest $request)
+    public function index(RoleRequest $request)
     {
         $this->theme->prependTitle(trans('user::role.names').' :: ');
 
@@ -51,10 +47,9 @@ class RoleAdminController extends AdminController
      *
      * @return Response
      */
-    public function lists(ViewRoleRequest $request)
+    public function lists(RoleRequest $request)
     {
         $array = $this->model->json();
-
         foreach ($array as $key => $row) {
             $array[$key] = array_only($row, config('user.role.listfields'));
         }
@@ -70,7 +65,7 @@ class RoleAdminController extends AdminController
      *
      * @return Response
      */
-    public function show(ViewRoleRequest $request, $id)
+    public function show(RoleRequest $request, $id)
     {
         $role = $this->model->findOrNew($id);
 
@@ -85,7 +80,7 @@ class RoleAdminController extends AdminController
      * @param  Request  $request
      * @return Response
      */
-    public function create(StoreRoleRequest $request)
+    public function create(RoleRequest $request)
     {
         $role = $this->model->findOrNew(0);
         Former::populate($role);
@@ -99,7 +94,7 @@ class RoleAdminController extends AdminController
      * @param  Request  $request
      * @return Response
      */
-    public function store(StoreRoleRequest $request)
+    public function store(RoleRequest $request)
     {
         if ($row = $this->model->create($request->all())) {
             return Response::json(['message' => 'Role created sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
@@ -115,7 +110,7 @@ class RoleAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function edit(UpdateRoleRequest $request, $id)
+    public function edit(RoleRequest $request, $id)
     {
         $role = $this->model->find($id);
 
@@ -131,7 +126,7 @@ class RoleAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function update(UpdateRoleRequest $request, $id)
+    public function update(RoleRequest $request, $id)
     {
         if ($row = $this->model->update($request->all(), $id)) {
             return Response::json(['message' => 'Role updated sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
@@ -146,7 +141,7 @@ class RoleAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function destroy(DeleteRoleRequest $request, $id)
+    public function destroy(RoleRequest $request, $id)
     {
         try {
             $this->model->delete($id);
