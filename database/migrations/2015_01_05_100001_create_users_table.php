@@ -17,8 +17,7 @@ class CreateUsersTable extends Migration {
             Schema::create('users', function($table) {
                 $table->increments('id')->unsigned();
                 $table->integer('reporting_to')->nullable()->default(0);
-                $table->string('first_name', 100)->nullable();
-                $table->string('last_name', 100)->nullable();
+                $table->string('name', 100)->nullable();
                 $table->string('email')->unique();
                 $table->string('password', 100);
                 $table->boolean('active')->nullable();
