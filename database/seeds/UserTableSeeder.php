@@ -18,6 +18,7 @@ class UserTableSeeder extends Seeder
                 'dob' => '2014-05-15',
                 'designation' => 'Super User',
                 'web' => 'http://lavalite.org',
+                'created_at' => '2015-09-15',
             ),
         ));
 
