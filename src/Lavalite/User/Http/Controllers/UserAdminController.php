@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Password;
 use Lavalite\User\Http\Requests\UserRequest;
 
 use Lavalite\User\Interfaces\UserRepositoryInterface;
+use Lavalite\User\Interfaces\RoleRepositoryInterface;
 
 /**
  *
@@ -53,10 +54,14 @@ class UserAdminController extends AdminController
      *
      * @return Response
      */
-    public function lists(UserRequest $request)
+    public function lists(UserRequest $request, RoleRepositoryInterface $roles, $role = NULL)
     {
-        $array = $this->model->json(config('user.user.listfields'));
+        if (empty($role)){
+            $array = $this->model->json(config('user.user.listfields'));
+            return array('data' => $array);
+        }
 
+        $array = $roles->users($role, config('user.role.listfields'));
         return array('data' => $array);
     }
 

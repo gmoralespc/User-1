@@ -74,6 +74,14 @@ class UserServiceProvider extends ServiceProvider {
     private function publishResources()
     {
         $this->publishes([__DIR__.'/../../../../config/config.php' => config_path('user.php')], 'config');
+
+        $this->publishes([
+            __DIR__.'/../../../../resources/views/public' => base_path('resources/views/vendor/user/public'),
+        ], 'view-user-public');
+
+        $this->publishes([
+            __DIR__.'/../../../../resources/views/admin' => base_path('resources/views/vendor/user/admin'),
+        ], 'view-user-admin');
     }
 
     /**

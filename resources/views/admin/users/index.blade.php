@@ -16,9 +16,12 @@
 </div>
 @stop
 @section('tools')
-<a href='#'>All</a>
-<a href='#'>Superusers</a>
-<a href='#'>Admin</a>
+<h4>
+<a href='#' class="label label-primary filter-role" data-role=''>All</a>
+@foreach(User::roles() as $role)
+<a href='#' class="label label-warning filter-role" data-role='{{ $role->name }}'>{{ ucfirst($role->name) }}</a>
+@endforeach
+</h4>
 @stop
 @section('content')
 <table id="main-list" class="table table-striped table-bordered">
@@ -35,7 +38,7 @@
 var oTable;
 $(document).ready(function(){
     $('#entry-user').load('{{URL::to('admin/user/user/0')}}');
-    oTable = $('#main-list').dataTable( {
+    oTable = $('#main-list').DataTable( {
         "ajax": '{{ URL::to('/admin/user/user/list') }}',
         "columns": [
         { "data": "name" },
@@ -48,6 +51,13 @@ $(document).ready(function(){
         $(this).toggleClass("selected").siblings(".selected").removeClass("selected");
         var d = $('#main-list').DataTable().row( this ).data();
         $('#entry-user').load('{{URL::to('admin/user/user')}}' + '/' + d.id);
+    });
+
+    $('.filter-role').on( 'click', function (e) {
+        role = $( this ).data( "role" );
+
+        oTable.ajax.url('{!! URL::to('/admin/user/user/list/') !!}/' + role).load();
+        e.preventDefault();
     });
 });
 </script>

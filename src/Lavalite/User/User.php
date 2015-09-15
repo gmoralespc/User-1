@@ -380,7 +380,17 @@ class User {
 	}
 
 	/**
-	 * Returns all permissions avilable .
+	 * Returns all roles avilable .
+	 *
+	 * @return mixed
+	 */
+	public function usersWithRole($role)
+	{
+		return  $this->role->users($role);
+	}
+
+	/**
+	 * Returns all users with given role.
 	 *
 	 * @return mixed
 	 */
