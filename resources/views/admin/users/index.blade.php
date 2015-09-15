@@ -16,6 +16,9 @@
 </div>
 @stop
 @section('tools')
+<a href='#'>All</a>
+<a href='#'>Superusers</a>
+<a href='#'>Admin</a>
 @stop
 @section('content')
 <table id="main-list" class="table table-striped table-bordered">

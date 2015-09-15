@@ -98,7 +98,7 @@
     </div>
 
 </div>
-<div class="tab-pane " id="groups">
+<div class="tab-pane " id="roles">
     <div class="row">
         <div class='col-md-3 col-sm-5'>
             <table class="table">
@@ -130,7 +130,7 @@
                         <td>{{ucfirst($keyPermission)}}</td>
                         <td>
                             @forelse($permission as $key => $val)
-                            &nbsp; <input name="permissions[{{ $keyPermission. '.' .$key }}]" type="checkbox" {{ ($user->can($keyPermission. ' ' .$key)) ? 'checked' : '' }} > {{$val}}
+                            &nbsp; <input name="permissions[{{ $keyPermission. '.' .$key }}]" type="checkbox" {{ ($user->canDo($keyPermission. ' ' .$key)) ? 'checked' : '' }} > {{$val}}
                             @empty
                             No permissions assigned
                             @endforelse
@@ -139,15 +139,6 @@
                     @endforeach
                 </tbody>
             </table>
-        </div>
-    </div>
-</div>
-<div class="tab-pane " id="settings">
-    <div class="row">
-        <div class='col-md-3 col-sm-4'>
-            {!! Former::password('password')
-            -> label(trans('user::user.label.password'))
-            -> placeholder(trans('user::user.placeholder.password')) !!}
         </div>
     </div>
 </div>
