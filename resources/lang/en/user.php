@@ -90,6 +90,8 @@ return array(
 
     'send'              =>  "Send",
 
+    'reset'              =>  "Reset password",
+
     'profile_update'   =>  "Your profile has been updated",
     'options'       =>  array(
                         "sex"    => array('male' => 'Male','female' => 'Female'),

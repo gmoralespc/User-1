@@ -22,13 +22,6 @@ class UserTableSeeder extends Seeder
             ),
         ));
 
-        DB::table('roles')->insert(array(
-            array(
-                'id' => 1,
-                'name' => 'superuser'
-            ),
-        ));
-
         DB::table('role_user')->insert(array(
             array(
                 'user_id' => 1,

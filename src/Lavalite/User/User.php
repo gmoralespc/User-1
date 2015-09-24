@@ -303,11 +303,11 @@ class User {
 	 *
 	 * @return void
 	 */
-	public function attachRole(Authenticable $user, $roleName)
+	public function attachRole($id, $roleName)
 	{
-	    $role = Defender::findRole($roleName);
-	    $user->attachRole($role);
-
+		$user 	= $this->user->find($id);
+	    $role 	= Defender::findRole($roleName);
+	    $user 	->attachRole($role);
 	}
 
 	/**
