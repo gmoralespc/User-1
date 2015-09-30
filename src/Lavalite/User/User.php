@@ -9,24 +9,34 @@
  * @version    5.1.0
  */
 
-use Theme;
 use Auth;
-use Former;
-use URL;
-use Artesaos\Defender\Facades\Defender as Defender;
+use Illuminate\Contracts\Foundation\Application;
+use Lavalite\User\Interfaces\UserRepositoryInterface;
+use Lavalite\User\Interfaces\RoleRepositoryInterface;
+use Lavalite\User\Interfaces\PermissionRepositoryInterface;
 
 /**
  * User wrapper class.
  */
 class User {
 
-	/**
-	 * @var user
-	 */
+    /**
+     * @var Application  variable
+     */
+    protected $app;
+
+    /**
+     * @var User repository variable
+     */
     protected $user;
 
 	/**
-	 * @var role
+	 * @var permission repository variable
+	 */
+    protected $permission;
+
+	/**
+	 * @var role repository variable
 	 */
     protected $role;
 
@@ -39,11 +49,13 @@ class User {
      *
      */
 
-    public function __construct(\Lavalite\User\Interfaces\UserRepositoryInterface $user,
-    							\Lavalite\User\Interfaces\RoleRepositoryInterface $role,
-    							\Lavalite\User\Interfaces\PermissionRepositoryInterface $permission)
+    public function __construct(Application $app,
+                                UserRepositoryInterface $user,
+                                RoleRepositoryInterface $role,
+    							PermissionRepositoryInterface $permission)
     {
-        $this->user     	= $user;
+        $this->app          = $app;
+        $this->user         = $user;
         $this->role     	= $role;
         $this->permission   = $permission;
     }
@@ -56,11 +68,10 @@ class User {
 	 * @param  bool   $activate
 	 * @return \Lavalite\User\Interfaces\UserInterface
 	 */
-	public function create(array $credentials, $activate = false)
+	public function create(array $credentials, $active = false)
 	{
 		$credentials = $credentials + ['active' => $active];
-		\Lavalite\User\Models::create($credentials);
-		return Auth::user();
+		return $this->user->create($credentials);
 	}
 
 	/**
@@ -73,7 +84,7 @@ class User {
 	 */
 	public function attempt(array $credentials, $remember = false)
 	{
-		return Auth::attempt($credentials, $remember);
+		return $this->app['user.auth']->attempt($credentials, $remember);
 	}
 
 	/**
@@ -84,7 +95,7 @@ class User {
 	 */
 	public function attemptAndRemember(array $credentials)
 	{
-		return Auth::attempt($credentials, true);
+		return $this->app['user.auth']->attempt($credentials, true);
 	}
 
 	/**
@@ -94,7 +105,7 @@ class User {
 	 */
 	public function check()
 	{
-		return Auth::check();
+		return $this->app['user.auth']->check();
 	}
 
 	/**
@@ -108,7 +119,7 @@ class User {
 	public function login(Authenticatable $user, $remember = false)
 	{
 		// Authentication attempt usng laravel native auth class
-		return Auth::attempt($user, $remember);
+		return $this->app['user.auth']->attempt($user, $remember);
 	}
 
 	/**
@@ -120,7 +131,7 @@ class User {
 	 */
 	public function once(array $user)
 	{
-		return Auth::once($user);
+		return $this->app['user.auth']->once($user);
 	}
 
 	/**
@@ -130,7 +141,7 @@ class User {
 	 */
 	public function logout()
 	{
-		Auth::logout();
+		$this->app['user.auth']->logout();
 	}
 
 	/**
@@ -141,223 +152,242 @@ class User {
 	public function user()
 	{
 		// We will lazily attempt to load our user
-		return Auth::user();
+		return $this->app['user.auth']->user();
 	}
 
-	/**
-	 * Check if the logged user has the $permission.
-	 *
-	 * @param  string $permission
-	 *
-	 * @return bool
-	 */
-	public function can($permission)
-	{
-		if (is_string($permission))
-			return Defender::canDo($permission);
+    /**
+     * Get the current authenticated user.
+     *
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     */
+    public function getUser()
+    {
+        return $this->app['user.auth']->user();
+    }
 
-		if (is_array($permission))
-			return $this->canAny($permission);
-	}
-
-	/**
-	 * Check if the logged user has any of the $permission.
-	 *
-	 * @param  array $permissions
-	 *
-	 * @return bool
-	 */
-
-	public function canAny(array $permissions)
-	{
-		if (is_array($permissions) and count($permissions) > 0) {
-            foreach ($permissions as $permission) {
-                if(Defender::canDo($permission)) return true;
-            }
+    /**
+     * Check if the authenticated user has the given permission.
+     *
+     * @param string $permission
+     * @param bool   $force
+     *
+     * @return bool
+     */
+    public function hasPermission($permission, $force = false)
+    {
+        if (! is_null($this->getUser())) {
+            return $this->getUser()->hasPermission($permission, $force);
         }
+
         return false;
-	}
+    }
 
-	/**
-	 * Check if the logged user has the $permission checking only the role permissions.
-	 *
-	 * @param  array $permissions
-	 *
-	 * @return bool
-	 */
+    /**
+     * Check if the authenticated user has the given permission.
+     *
+     * @param string $permission
+     * @param bool   $force
+     *
+     * @return bool
+     */
+    public function can($permission, $force = false)
+    {
+        if (! is_null($this->getUser())) {
+            return $this->getUser()->canDo($permission, $force);
+        }
 
-	public function canWithRolePermissions(array $permissions)
-	{
-		return Defender::canWithRolePermissions($permission);
-	}
+        return false;
+    }
 
-	/**
-	 * Check whether the current user belongs to the role.
-	 *
-	 * @param  string $roleName
-	 *
-	 * @return bool
-	 */
+    /**
+     * Check if the authenticated user has the given permission
+     * using only the roles.
+     *
+     * @param string $permission
+     * @param bool   $force
+     *
+     * @return bool
+     */
+    public function roleHasPermission($permission, $force = false)
+    {
+        if (! is_null($this->getUser())) {
+            return $this->getUser()->roleHasPermission($permission, $force);
+        }
 
-	public function is($roleName)
-	{
-        return Defender::is($roleName);
-	}
+        return false;
+    }
 
-	/**
-	 * Check whether the current user belongs to the role.
-	 *
-	 * @param  string $roleName
-	 *
-	 * @return bool
-	 */
+    /**
+     * Return if the authenticated user has the given role.
+     *
+     * @param string $roleName
+     *
+     * @return bool
+     */
+    public function hasRole($roleName)
+    {
+        if (! is_null($this->getUser())) {
+            return $this->getUser()->hasRole($roleName);
+        }
 
-	public function hasRole($roleName)
-	{
-        return Defender::hasRole($roleName);
-	}
+        return false;
+    }
 
-	/**
-	 * Check if the role $roleName exists in the database.
-	 *
-	 * @param  string $roleName
-	 *
-	 * @return bool
-	 */
+    /**
+     * Return if the authenticated user has any of the given roles.
+     *
+     * @param string $roles
+     *
+     * @return bool
+     */
+    public function hasRoles($roles)
+    {
+        if (! is_null($this->getUser())) {
+            return $this->getUser()->hasRoles($roles);
+        }
 
-	public function roleExists($roleName)
-	{
-        return Defender::roleExists($roleName);
-	}
+        return false;
+    }
 
-	/**
-	 * Check if the permission $permissionName exists in the database.
-	 *
-	 * @param  string $permissionName
-	 *
-	 * @return bool
-	 */
+    /**
+     * Return if the authenticated user has the given role.
+     *
+     * @param string|array $roleName
+     *
+     * @return bool
+     */
+    public function is($roleName)
+    {
+        if (is_array($roleName)) {
+            return $this->hasRoles($roleName);
+        }
 
-	public function permissionExists($permissionName)
-	{
-        return Defender::permissionExists($permissionName);
-	}
+        return $this->hasRole($roleName);
+    }
 
-	/**
-	 * Find the role in the database by the name $roleName.
-	 *
-	 * @param  string $roleName
-	 *
-	 * @return bool
-	 */
+    /**
+     * Check if a role with the given name exists.
+     *
+     * @param string $roleName
+     *
+     * @return bool
+     */
+    public function roleExists($roleName)
+    {
+        return $this->role->findByName($roleName) !== null;
+    }
 
-	public function findRole($roleName)
-	{
-        return Defender::findRole($roleName);
-	}
+    /**
+     * Check if a permission with the given name exists.
+     *
+     * @param string $permissionName
+     *
+     * @return bool
+     */
+    public function permissionExists($permissionName)
+    {
+        return $this->permission->findByName($permissionName) !== null;
+    }
 
-	/**
-	 * Find the role in the database by the role ID roleId.
-	 *
-	 * @param  int $roleId
-	 *
-	 * @return bool
-	 */
+    /**
+     * Get the role with the given name.
+     *
+     * @param string $roleName
+     *
+     * @return \Artesaos\Defender\Role|null
+     */
+    public function findRole($roleName)
+    {
+        return $this->role->findByName($roleName);
+    }
 
-	public function findRoleById($roleId)
-	{
-        return Defender::findRoleById($roleId);
-	}
+    /**
+     * * Find a role by its id.
+     *
+     * @param int $roleId
+     *
+     * @return mixed
+     */
+    public function findRoleById($roleId)
+    {
+        return $this->role->findById($roleId);
+    }
 
-	/**
-	 * Find the permission in the database by the name $permissionName.
-	 *
-	 * @param  string $permissionName
-	 *
-	 * @return bool
-	 */
+    /**
+     * Get the permission with the given name.
+     *
+     * @param string $permissionName
+     *
+     * @return \Artesaos\Defender\Permission|null
+     */
+    public function findPermission($permissionName)
+    {
+        return $this->permission->findByName($permissionName);
+    }
 
-	public function findPermission($permissionName)
-	{
-        return Defender::findPermission($permissionName);
-	}
+    /**
+     * Find a permission by its id.
+     *
+     * @param int $permissionId
+     *
+     * @return \Artesaos\Defender\Permission|null
+     */
+    public function findPermissionById($permissionId)
+    {
+        return $this->permission->findById($permissionId);
+    }
 
-	/**
-	 * Find the permission in the database by the ID $permissionId.
-	 *
-	 * @param  string $permissionId
-	 *
-	 * @return bool
-	 */
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function permissionsList()
+    {
+        return $this->permission->getList('name', 'id');
+    }
 
-	public function findPermissionById($permissionId)
-	{
-        return Defender::findPermissionById($permissionId);
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function rolesList()
+    {
+        return $this->role->getList('name', 'id');
+    }
 
-	/**
-	 * Attache a role to the user.
-	 *
-	 * @param Authenticable $user
-	 * @param string $roleName
-	 *
-	 * @return void
-	 */
-	public function attachRole($id, $roleName)
-	{
-		$user 	= $this->user->find($id);
-	    $role 	= Defender::findRole($roleName);
-	    $user 	->attachRole($role);
-	}
+    /**
+     * Create a new role.
+     * Uses a repository to actually create the role.
+     *
+     * @param string $roleName
+     *
+     * @return \Artesaos\Defender\Role
+     */
+    public function createRole($roleName)
+    {
+        return $this->role->create($roleName);
+    }
 
-	/**
-	 * Attache a role to the user.
-	 *
-	 * @param Authenticable $user
-	 * @param string $roleName
-	 *
-	 * @return void
-	 */
-	public function attachPermission(Authenticable $user, $permissionName)
-	{
-	    $permission = Defender::findPermission($permissionName);
+    /**
+     * @param string $permissionName
+     * @param string $readableName
+     *
+     * @return Permission
+     */
+    public function createPermission($permissionName, $readableName = null)
+    {
+        return $this->permission->create($permissionName, $readableName);
+    }
 
-	    $user->attachPermission($permission, [
-	        'value' => true
-    	]);
+    /**
+     * @return Javascript
+     */
+    public function javascript()
+    {
+        if (! $this->javascript) {
+            $this->javascript = new Javascript($this);
+        }
 
-	}
-
-	/**
-	 * Attache a role to the user.
-	 *
-	 * @param Authenticable $user
-	 * @param string $roleName
-	 *
-	 * @return void
-	 */
-	public function detachRole(Authenticable $user, $roleName)
-	{
-	    $role = Defender::findRole($roleName);
-	    $user->detachRole($role);
-
-	}
-
-	/**
-	 * Attache a role to the user.
-	 *
-	 * @param Authenticable $user
-	 * @param string $roleName
-	 *
-	 * @return void
-	 */
-	public function detachPermission(Authenticable $user, $permissionName)
-	{
-	    $permission = Defender::findPermission($permissionName);
-
-	    $user->detachPermission($permission);
-
-	}
+        return $this->javascript;
+    }
 
 	/**
 	 * Returns the specific details of current user.

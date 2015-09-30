@@ -4,7 +4,7 @@
  *
  *
  * @package    Lavalite
- * @version    2.0.0
+ * @version    5.1
  */
 
 
@@ -23,9 +23,7 @@ class UserServiceProvider extends ServiceProvider {
         $this->loadTranslationsFrom(__DIR__.'/../../../../resources/lang', 'user');
 
         $this->publishResources();
-        $this->publishMigrations();
 
-        $this->app->register('\Artesaos\Defender\Providers\DefenderServiceProvider');
         $this->app->register('\Laravel\Socialite\SocialiteServiceProvider');
 
         include __DIR__ . '/../Http/routes.php';
@@ -56,6 +54,15 @@ class UserServiceProvider extends ServiceProvider {
             'Lavalite\\User\\Interfaces\\PermissionRepositoryInterface',
             'Lavalite\\User\\Repositories\\Eloquent\\PermissionRepository'
         );
+
+
+        $this->app->singleton('user.auth', function ($app) {
+            return $app['auth'];
+        });
+
+        $this->app->singleton('user.auth', function ($app) {
+            return $app['auth'];
+        });
 	}
 
     /**
@@ -65,32 +72,39 @@ class UserServiceProvider extends ServiceProvider {
      */
     public function provides()
     {
-        return array('user');
+        return ['user', 'user.role', 'user.permission', 'user.auth'];
     }
 
     /**
-     * Publish configuration file.
+     * Publish resources.
+     *
+     * @return  void
      */
     private function publishResources()
     {
-        $this->publishes([__DIR__.'/../../../../config/config.php' => config_path('user.php')], 'config');
+        // Publish configuration file
+        $this->publishes([__DIR__.'/../../../../config/config.php'
+                        => config_path('user.php')], 'config');
 
-        $this->publishes([
-            __DIR__.'/../../../../resources/views/public' => base_path('resources/views/vendor/user/public'),
-        ], 'view-user-public');
+        // Publish public view
+        $this->publishes([__DIR__.'/../../../../resources/views/public'
+                        => base_path('resources/views/vendor/user/public')], 'view-public');
 
-        $this->publishes([
-            __DIR__.'/../../../../resources/views/admin' => base_path('resources/views/vendor/user/admin'),
-        ], 'view-user-admin');
-    }
+        // Publish admin view
+        $this->publishes([__DIR__.'/../../../../resources/views/admin'
+                        => base_path('resources/views/vendor/user/admin')], 'view-admin');
 
-    /**
-     * Publish migration file.
-     */
-    private function publishMigrations()
-    {
-        $this->publishes([__DIR__.'/../../../../database/migrations/' => base_path('database/migrations')], 'migrations');
-        $this->publishes([__DIR__.'/../../../../database/seeds/' => base_path('database/seeds')], 'seeds');
+        // Publish language files
+        $this->publishes([__DIR__.'/path/to/translations'
+                        => base_path('resources/lang/vendor/user')], 'lang');
+
+        // Publish migrations
+        $this->publishes([__DIR__.'/../../../../database/migrations/'
+                        => base_path('database/migrations')], 'migrations');
+
+        // Publish seeds
+        $this->publishes([__DIR__.'/../../../../database/seeds/'
+                        => base_path('database/seeds')], 'seeds');
     }
 
 }

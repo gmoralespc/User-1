@@ -2,11 +2,13 @@
 
 namespace Lavalite\User\Models;
 
+use Lavalite\User\Traits\Permissions\RoleHasPermissions;
 use Illuminate\Database\Eloquent\Model;
 
 
 class Role extends Model
 {
+    use RoleHasPermissions;
 
     /**
      * Initialiaze page modal

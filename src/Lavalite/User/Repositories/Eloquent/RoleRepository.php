@@ -35,4 +35,22 @@ class RoleRepository extends BaseRepository implements RoleRepositoryInterface
         return array();
     }
 
+    /**
+     * Create a new role with the given name.
+     *
+     * @param $roleName
+     *
+     * @throws \Exception
+     *
+     * @return Role
+     */
+    public function createRole($roleName)
+    {
+        if (! is_null($this->findByName($roleName))) {
+            // TODO: add translation support
+            throw new RoleExistsException('A role with the given name already exists');
+        }
+        return $role = $this->model->create(['name' => $roleName]);
+    }
+
 }

@@ -177,6 +177,30 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
+     * @param int $id
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function findById($id)
+    {
+        $model = $this->model->find($id);
+        $this->resetModel();
+        return $model;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function findByName($name)
+    {
+        $model =  $this->model->where('name', '=', $name)->first();
+        $this->resetModel();
+        return $model;
+    }
+
+    /**
      * Find data by id and return new instance if not found.
      *
      * @param $id

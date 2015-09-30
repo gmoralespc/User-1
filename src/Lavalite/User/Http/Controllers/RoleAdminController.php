@@ -4,6 +4,7 @@ namespace Lavalite\User\Http\Controllers;
 
 use Former;
 use Response;
+use User;
 use App\Http\Controllers\AdminController as AdminController;
 
 use Lavalite\User\Http\Requests\RoleRequest;
@@ -70,8 +71,8 @@ class RoleAdminController extends AdminController
         $role = $this->model->findOrNew($id);
 
         Former::populate($role);
-
-        return view('user::admin.role.show', compact('role'));
+        $permissions  = User::permissions(true);
+        return view('user::admin.role.show', compact('role', 'permissions'));
     }
 
     /**
@@ -84,8 +85,9 @@ class RoleAdminController extends AdminController
     {
         $role = $this->model->findOrNew(0);
         Former::populate($role);
+        $permissions  = User::permissions(true);
 
-        return view('user::admin.role.create', compact('role'));
+        return view('user::admin.role.create', compact('role', 'permissions'));
     }
 
     /**
@@ -115,8 +117,9 @@ class RoleAdminController extends AdminController
         $role = $this->model->find($id);
 
         Former::populate($role);
+        $permissions  = User::permissions(true);
 
-        return view('user::admin.role.edit', compact('role'));
+        return view('user::admin.role.edit', compact('role', 'permissions'));
     }
 
     /**

@@ -1,7 +1,28 @@
-  <div class="row">
-
-               <div class='col-md-4 col-sm-6'>{!! Former::text('name')
-               -> label(trans('user::role.label.name'))
-               -> placeholder(trans('user::role.placeholder.name'))!!}
-               </div>
-        </div>
+<div class="row">
+    <div class='col-md-3 col-sm-3'>{!! Former::text('name')
+        -> label(trans('user::role.label.name'))
+        -> placeholder(trans('user::role.placeholder.name'))!!}
+    </div>
+    <div class='col-md-9 col-sm-9'>
+        <table class="table">
+            <thead>
+                <th>Modules</th>
+                <th>Permissions</th>
+            </thead>
+            <tbody>
+                @foreach($permissions as $keyPermission => $permission)
+                <tr>
+                    <td>{{ucfirst($keyPermission)}}</td>
+                    <td>
+                        @forelse($permission as $key => $val)
+                        &nbsp; <input name="permissions[{{ $keyPermission. '.' .$key }}]" type="checkbox" > {{$val}}
+                        @empty
+                        No permissions assigned
+                        @endforelse
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
