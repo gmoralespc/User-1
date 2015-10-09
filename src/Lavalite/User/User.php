@@ -10,6 +10,7 @@
  */
 
 use Auth;
+use Former;
 use Illuminate\Contracts\Foundation\Application;
 use Lavalite\User\Interfaces\UserRepositoryInterface;
 use Lavalite\User\Interfaces\RoleRepositoryInterface;
