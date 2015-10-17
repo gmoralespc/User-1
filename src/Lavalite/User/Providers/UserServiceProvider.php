@@ -24,7 +24,7 @@ class UserServiceProvider extends ServiceProvider {
 
         $this->publishResources();
 
-        $this->app->register('\Laravel\Socialite\SocialiteServiceProvider');
+        $this->app->register(\Laravel\Socialite\SocialiteServiceProvider::class);
 
         include __DIR__ . '/../Http/routes.php';
 	}
