@@ -86,16 +86,12 @@ class UserServiceProvider extends ServiceProvider {
         $this->publishes([__DIR__.'/../../../../config/config.php'
                         => config_path('user.php')], 'config');
 
-        // Publish public view
-        $this->publishes([__DIR__.'/../../../../resources/views/public'
-                        => base_path('resources/views/vendor/user/public')], 'view-public');
-
         // Publish admin view
         $this->publishes([__DIR__.'/../../../../resources/views/admin'
                         => base_path('resources/views/vendor/user/admin')], 'view-admin');
 
         // Publish language files
-        $this->publishes([__DIR__.'/path/to/translations'
+        $this->publishes([__DIR__.'/../../../../resources/lang'
                         => base_path('resources/lang/vendor/user')], 'lang');
 
         // Publish migrations
