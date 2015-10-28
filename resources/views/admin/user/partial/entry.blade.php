@@ -12,22 +12,12 @@
                 -> placeholder(trans('user::user.placeholder.email')) !!}
             </div>
             <div class='col-md-12 col-sm-12'>
-                {!! Former::inline_radios('sex')
-                -> radios(trans('user::user.options.sex'))
-                -> label(trans('user::user.label.sex')) !!}
-            </div>
-            <div class='col-md-12 col-sm-12'>
-                {!! Former::select('reporting_to')
-                -> options(trans('user::user.options.reporting_to'))
-                -> label(trans('user::user.label.reporting_to'))
-                -> placeholder(trans('user::user.placeholder.reporting_to')) !!}
-            </div>
-            <div class='col-md-12 col-sm-12'>
                 {!! Former::datetime('dob')
                 -> label(trans('user::user.label.dob'))
                 -> placeholder(trans('user::user.placeholder.dob')) !!}
             </div>
         </div>
+        <!--
         <div class='col-md-3 col-sm-4'>
             <div class='col-md-12 col-sm-12'>
                 {!! Former::text('address')
@@ -59,23 +49,37 @@
                 -> label(trans('user::user.label.country'))
                 -> placeholder(trans('user::user.placeholder.country')) !!}
             </div>
+            <div class='col-md-12 col-sm-12'>
+                {!! Former::url('web')
+                -> label(trans('user::user.label.web'))
+                -> placeholder(trans('user::user.placeholder.web')) !!}
+            </div>
         </div>
+        -->
         <div class='col-md-3 col-sm-4'>
+            <div class='col-md-12 col-sm-12'>
+                {!! Former::radios('sex')
+                -> radios(trans('user::user.options.sex'))
+                -> label(trans('user::user.label.sex')) !!}
+            </div>
+            <div class='col-md-12 col-sm-12'>
+                {!! Former::select('reporting_to')
+                -> options(trans('user::user.options.reporting_to'))
+                -> label(trans('user::user.label.reporting_to'))
+                -> placeholder(trans('user::user.placeholder.reporting_to')) !!}
+            </div>
             <div class='col-md-12 col-sm-12'>
                 {!! Former::select('department')
                 -> options(trans('user::user.options.department'))
                 -> label(trans('user::user.label.department'))
                 -> placeholder(trans('user::user.placeholder.department')) !!}
             </div>
+        </div>
+        <div class='col-md-3 col-sm-4'>
             <div class='col-md-12 col-sm-12'>
                 {!! Former::text('designation')
                 -> label(trans('user::user.label.designation'))
                 -> placeholder(trans('user::user.placeholder.designation')) !!}
-            </div>
-            <div class='col-md-12 col-sm-12'>
-                {!! Former::url('web')
-                -> label(trans('user::user.label.web'))
-                -> placeholder(trans('user::user.placeholder.web')) !!}
             </div>
             <div class='col-md-12 col-sm-12'>
                 {!! Former::tel('mobile')
@@ -130,7 +134,7 @@
                         <td>{{ucfirst($keyPermission)}}</td>
                         <td>
                             @forelse($permission as $key => $val)
-                            &nbsp; <input name="permissions[{{ $keyPermission. '.' .$key }}]" type="checkbox" {{ ($user->canDo($keyPermission. ' ' .$key)) ? 'checked' : '' }} > {{$val}}
+                            &nbsp; <input name="permissions[{{ $keyPermission. '.' .$key }}]" type="checkbox" {{ ($user->can($keyPermission. ' ' .$key)) ? 'checked' : '' }} > {{$val}}
                             @empty
                             No permissions assigned
                             @endforelse

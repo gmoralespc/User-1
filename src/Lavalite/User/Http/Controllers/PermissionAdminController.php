@@ -1,17 +1,16 @@
 <?php
-
 namespace Lavalite\User\Http\Controllers;
 
 use Former;
 use Response;
 use App\Http\Controllers\AdminController as AdminController;
 
-use Lavalite\User\Http\Requests\PermissionRequest;
+use Lavalite\User\Http\Requests\PermissionAdminRequest;
 use Lavalite\User\Interfaces\PermissionRepositoryInterface;
 
 /**
  *
- * @package Permissions
+ * @package Permission
  */
 
 class PermissionAdminController extends AdminController
@@ -33,28 +32,21 @@ class PermissionAdminController extends AdminController
      *
      * @return Response
      */
-    public function index(PermissionRequest $request)
+    public function index(PermissionAdminRequest $request)
     {
+        if($request->wantsJson()){
+
+            $array = $this->model->json();
+            foreach ($array as $key => $row) {
+                $array[$key] = array_only($row, config('user.permission.listfields'));
+            }
+
+            return array('data' => $array);
+        }
+
         $this->theme->prependTitle(trans('user::permission.names').' :: ');
 
         return $this->theme->of('user::admin.permission.index')->render();
-    }
-
-    /**
-     * Return list of permission as json.
-     *
-     * @param  Request  $request
-     *
-     * @return Response
-     */
-    public function lists(PermissionRequest $request)
-    {
-        $array = $this->model->json();
-        foreach ($array as $key => $row) {
-            $array[$key] = array_only($row, config('user.permission.listfields'));
-        }
-
-        return array('data' => $array);
     }
 
     /**
@@ -65,13 +57,25 @@ class PermissionAdminController extends AdminController
      *
      * @return Response
      */
-    public function show(PermissionRequest $request, $id)
+    public function show(PermissionAdminRequest $request, $id)
     {
-        $permission = $this->model->findOrNew($id);
+        $permission = $this->model->find($id);
+
+        if (empty($permission)) {
+
+            if($request->wantsJson())
+                return [];
+
+            return view('user::admin.permission.new');
+        }
+
+        if($request->wantsJson())
+            return $permission;
 
         Former::populate($permission);
 
         return view('user::admin.permission.show', compact('permission'));
+
     }
 
     /**
@@ -80,7 +84,7 @@ class PermissionAdminController extends AdminController
      * @param  Request  $request
      * @return Response
      */
-    public function create(PermissionRequest $request)
+    public function create(PermissionAdminRequest $request)
     {
         $permission = $this->model->findOrNew(0);
         Former::populate($permission);
@@ -94,12 +98,14 @@ class PermissionAdminController extends AdminController
      * @param  Request  $request
      * @return Response
      */
-    public function store(PermissionRequest $request)
+    public function store(PermissionAdminRequest $request)
     {
-        if ($row = $this->model->create($request->all())) {
-            return Response::json(['message' => 'Permission created sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
-        } else {
-            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+        try {
+            $attributes         = $request->all();
+            $permission       = $this->model->create($attributes);
+            return $this->success(trans('messages.success.created', ['Module' => trans('user::permission.name')]));
+        } catch (Exception $e) {
+            return $this->error($e->getMessage());
         }
     }
 
@@ -110,7 +116,7 @@ class PermissionAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function edit(PermissionRequest $request, $id)
+    public function edit(PermissionAdminRequest $request, $id)
     {
         $permission = $this->model->find($id);
 
@@ -126,12 +132,14 @@ class PermissionAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function update(PermissionRequest $request, $id)
+    public function update(PermissionAdminRequest $request, $id)
     {
-        if ($row = $this->model->update($request->all(), $id)) {
-            return Response::json(['message' => 'Permission updated sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
-        } else {
-            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+        try {
+            $attributes         = $request->all();
+            $permission       = $this->model->update($attributes, $id);
+            return $this->success(trans('messages.success.updated', ['Module' => trans('user::permission.name')]));
+        } catch (Exception $e) {
+            return $this->error($e->getMessage());
         }
     }
 
@@ -141,13 +149,14 @@ class PermissionAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function destroy(PermissionRequest $request, $id)
+    public function destroy(PermissionAdminRequest $request, $id)
     {
         try {
             $this->model->delete($id);
-            return Response::json(['message' => 'Permission deleted sucessfully'.$id, 'type' => 'success', 'title' => 'Success'], 201);
+            return $this->success(trans('message.success.deleted', ['Module' => trans('user::permission.name')]), 200);
         } catch (Exception $e) {
-            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+            return $this->error($e->getMessage());
         }
     }
+
 }

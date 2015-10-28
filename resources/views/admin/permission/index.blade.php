@@ -26,6 +26,8 @@
 <table id="main-list" class="table table-striped table-bordered">
     <thead>
         <th>{!! trans('user::permission.label.name')!!}</th>
+            <th>{!! trans('user::permission.label.readable_name')!!}</th>
+
     </thead>
 </table>
 @stop
@@ -36,9 +38,12 @@ var oTable;
 $(document).ready(function(){
     $('#entry-permission').load('{{URL::to('admin/user/permission/0')}}');
     oTable = $('#main-list').dataTable( {
-        "ajax": '{{ URL::to('/admin/user/permission/list') }}',
+        "ajax": '{{ URL::to('/admin/user/permission') }}',
         "columns": [
-        { "data": "name" },],
+            {data :'name'},
+            {data :'readable_name'},
+
+        ],
         "permissionLength": 50
     });
 

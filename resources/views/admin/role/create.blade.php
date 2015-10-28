@@ -1,8 +1,8 @@
 <div class="box-header with-border">
-    <h3 class="box-title"> New Role </h3>
+    <h3 class="box-title"> {{ trans('cms.new') }}  {{ trans('user::role.name') }} </h3>
     <div class="box-tools pull-right">
-        <button type="button" class="btn btn-primary btn-sm" id="btn-save"><i class="fa fa-floppy-o"></i> Save</button>
-        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="btn-cancel"><i class="fa fa-times-circle"></i> Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-save"><i class="fa fa-floppy-o"></i> {{ trans('cms.save') }}</button>
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="btn-cancel"><i class="fa fa-times-circle"></i> {{ trans('cms.close') }}</button>
         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
     </div>
 </div>
@@ -22,8 +22,8 @@
                 @include('user::admin.role.partial.entry')
             </div>
         </div>
-    </div>
     {!! Former::close() !!}
+    </div>
 </div>
 <div class="box-footer" >
     &nbsp;
@@ -39,20 +39,25 @@
     $('#create-user-role')
     .submit( function( e ) {
         if($('#create-user-role').valid() == false) {
-            toastr.error('Please enter valid information.', 'Error');
-            return;
+            toastr.error('Unprocessable entry.', 'Warning');
+            return false;
         }
+        var url  = $(this).attr('action');
+        var formData = new FormData( this );
 
         $.ajax( {
-            url: "{{ URL::to('admin/user/role')}}",
+            url: url,
             type: 'POST',
-            data: new FormData( this ),
+            data: formData,
             processData: false,
             contentType: false,
+            beforeSend:function()
+            {
+            },
             success:function(data, textStatus, jqXHR)
             {
                 $('#main-list').DataTable().ajax.reload( null, false );
-                $('#entry-role').load('{{URL::to('admin/user/role')}}/' + data.id);
+                $('#entry-role').load('{{URL::to('admin/user/role')}}/0');
             },
             error: function(jqXHR, textStatus, errorThrown)
             {

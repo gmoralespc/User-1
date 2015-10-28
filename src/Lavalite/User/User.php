@@ -449,7 +449,7 @@ class User {
     {
         $user = $this->user->find(User::users('id'));
         Former::populate($user);
-        return view('user::admin.users.profile', compact('user'));
+        return view('user::admin.user.profile', compact('user'));
     }
 
     /**
@@ -460,7 +460,18 @@ class User {
     public function password($mode)
     {
         $user = $this->user->find(User::users('id'));
-        return view('user::admin.users.password', compact('user'));
+        return view('user::admin.user.password', compact('user'));
+    }
+
+
+    /**
+     * Return the count of records.
+     *
+     * @return Response
+     */
+    public function count()
+    {
+       return 0;
     }
 
 

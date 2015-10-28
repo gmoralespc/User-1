@@ -4,7 +4,7 @@ return [
 
     "options"  => [
 
-        
+
 
     ],
 
@@ -29,5 +29,10 @@ return [
 
     "name" 			=> "Permission",
     "names" 		=> "Permissions",
+    // Texts  for the module
+    "text" => [
+        'preview' => 'Click on the below list for preview'
+    ],
+
 
 ];

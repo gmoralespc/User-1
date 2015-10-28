@@ -161,6 +161,11 @@ return array(
                         ),
 
                         "name"              => 'User',
-                        "names"             => 'Users'
+                        "names"             => 'Users',
+
+    // Texts  for the module
+    "text" => [
+        'preview' => 'Click on the below list for preview'
+    ],
 
 );

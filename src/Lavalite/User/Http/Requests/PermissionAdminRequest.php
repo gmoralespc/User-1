@@ -5,7 +5,7 @@ namespace Lavalite\User\Http\Requests;
 use App\Http\Requests\Request;
 use User;
 
-class PermissionRequest extends Request {
+class PermissionAdminRequest extends Request {
 
 	/**
 	 * Determine if the user is authorized to make this request.

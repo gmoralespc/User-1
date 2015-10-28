@@ -39,7 +39,7 @@ var oTable;
 $(document).ready(function(){
     $('#entry-user').load('{{URL::to('admin/user/user/0')}}');
     oTable = $('#main-list').DataTable( {
-        "ajax": '{{ URL::to('/admin/user/user/list') }}',
+        "ajax": '{{ URL::to('/admin/user/user') }}',
         "columns": [
         { "data": "name" },
         { "data": "email" },
@@ -56,7 +56,7 @@ $(document).ready(function(){
     $('.filter-role').on( 'click', function (e) {
         role = $( this ).data( "role" );
 
-        oTable.ajax.url('{!! URL::to('/admin/user/user/list/') !!}/' + role).load();
+        oTable.ajax.url('{!! URL::to('/admin/user/user?role=') !!}' + role).load();
         e.preventDefault();
     });
 });

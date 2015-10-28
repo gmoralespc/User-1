@@ -1,24 +1,18 @@
 <?php
-
 namespace Lavalite\User\Http\Controllers;
 
 use Former;
 use Response;
-use Illuminate\Http\Request as Requests;
-use Request;
 use User;
 use App\Http\Controllers\AdminController as AdminController;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\Password;
 
-use Lavalite\User\Http\Requests\UserRequest;
-
+use Lavalite\User\Http\Requests\UserAdminRequest;
 use Lavalite\User\Interfaces\UserRepositoryInterface;
 use Lavalite\User\Interfaces\RoleRepositoryInterface;
 
 /**
  *
- * @package Users
+ * @package User
  */
 
 class UserAdminController extends AdminController
@@ -40,30 +34,22 @@ class UserAdminController extends AdminController
      *
      * @return Response
      */
-    public function index(UserRequest $request)
+    public function index(UserAdminRequest $request, RoleRepositoryInterface $roles, $role = NULL)
     {
-        $this->theme->prependTitle(trans('user::user.names').' :: ');
-
-        return $this->theme->of('user::admin.users.index')->render();
-    }
-
-    /**
-     * Return list of user as json.
-     *
-     * @param  Request  $request
-     *
-     * @return Response
-     */
-    public function lists(UserRequest $request, RoleRepositoryInterface $roles, $role = NULL)
-    {
-        if (empty($role)){
-            $array = $this->model->json(config('user.user.listfields'));
+        if($request->wantsJson()){
+            if (!$request->has('role')){
+                $array = $this->model->json(config('user.user.listfields'));
+                return array('data' => $array);
+            }
+            $array = $roles->users($request->get('role'), config('user.role.listfields'));
             return array('data' => $array);
         }
 
-        $array = $roles->users($role, config('user.role.listfields'));
-        return array('data' => $array);
+        $this->theme->prependTitle(trans('user::user.names').' :: ');
+
+        return $this->theme->of('user::admin.user.index')->render();
     }
+
 
     /**
      * Display the specified resource.
@@ -73,15 +59,28 @@ class UserAdminController extends AdminController
      *
      * @return Response
      */
-    public function show(UserRequest $request, $id)
+    public function show(UserAdminRequest $request, $id)
     {
-        $user = $this->model->findOrNew($id);
+        $user = $this->model->find($id);
+
+        if (empty($user)) {
+
+            if($request->wantsJson())
+                return [];
+
+            return view('user::admin.user.new');
+        }
+
+        if($request->wantsJson())
+            return $user;
+
+        $permissions  = User::permissions(true);
+        $roles  = User::roles();
+
         Former::populate($user);
 
-        $roles  = User::roles();
-        $permissions  = User::permissions(true);
+        return view('user::admin.user.show', compact('user', 'roles', 'permissions'));
 
-        return view('user::admin.users.show', compact('user', 'roles', 'permissions'));
     }
 
     /**
@@ -90,14 +89,14 @@ class UserAdminController extends AdminController
      * @param  Request  $request
      * @return Response
      */
-    public function create(UserRequest $request)
+    public function create(UserAdminRequest $request)
     {
         $user = $this->model->findOrNew(0);
         $permissions  = User::permissions(true);
         $roles  = User::roles();
         Former::populate($user);
 
-        return view('user::admin.users.create', compact('user', 'roles', 'permissions'));
+        return view('user::admin.user.create', compact('user', 'roles', 'permissions'));
     }
 
     /**
@@ -106,13 +105,14 @@ class UserAdminController extends AdminController
      * @param  Request  $request
      * @return Response
      */
-    public function store(UserRequest $request)
+    public function store(UserAdminRequest $request)
     {
-
-        if ($row = $this->model->create($request->all())) {
-            return Response::json(['message' => 'User created sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
-        } else {
-            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+        try {
+            $attributes         = $request->all();
+            $user       = $this->model->create($attributes);
+            return $this->success(trans('messages.success.created', ['Module' => trans('user::user.name')]));
+        } catch (Exception $e) {
+            return $this->error($e->getMessage());
         }
     }
 
@@ -123,14 +123,14 @@ class UserAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function edit(UserRequest $request, $id)
+    public function edit(UserAdminRequest $request, $id)
     {
         $user = $this->model->find($id);
-
-        Former::populate($user);
         $roles  = User::roles();
         $permissions  = User::permissions(true);
-        return view('user::admin.users.edit', compact('user', 'roles', 'permissions'));
+        Former::populate($user);
+
+        return view('user::admin.user.edit', compact('user', 'roles', 'permissions'));
     }
 
     /**
@@ -140,12 +140,14 @@ class UserAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function update(UserRequest $request, $id)
+    public function update(UserAdminRequest $request, $id)
     {
-        if ($row = $this->model->update($request->all(), $id)) {
-            return Response::json(['message' => 'User updated sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
-        } else {
-            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+        try {
+            $attributes         = $request->all();
+            $user       = $this->model->update($attributes, $id);
+            return $this->success(trans('messages.success.updated', ['Module' => trans('user::user.name')]));
+        } catch (Exception $e) {
+            return $this->error($e->getMessage());
         }
     }
 
@@ -155,53 +157,14 @@ class UserAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function destroy(UserRequest $request, $id)
+    public function destroy(UserAdminRequest $request, $id)
     {
         try {
             $this->model->delete($id);
-            return Response::json(['message' => 'User deleted sucessfully'.$id, 'type' => 'success', 'title' => 'Success'], 201);
+            return $this->success(trans('message.success.deleted', ['Module' => trans('user::user.name')]), 200);
         } catch (Exception $e) {
-            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
+            return $this->error($e->getMessage());
         }
-    }
-
-    /**
-     * Update profile of logged user.
-     *
-     * @return Response
-     */
-    public function updateProfile(Authenticatable $user)
-    {
-        $id = $user->id;
-        if ($row = $this->model->update(Request::all(), $id)) {
-            return Response::json(['message' => 'Profile updated sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
-        } else {
-            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
-        }
-    }
-
-    /**
-     * Reset the given user's password.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function changePassword(Authenticatable $user, Requests $request)
-    {
-        $this->validate($request, [
-            'password' => 'required|confirmed|min:6',
-        ]);
-
-        $password   = $request->get('password');
-
-        $user->password = bcrypt($password);
-
-        if ($user->save()) {
-            return Response::json(['message' => 'Password changed sucessfully', 'type' => 'success', 'title' => 'Success'], 201);
-        } else {
-            return Response::json(['message' => $e->getMessage(), 'type' => 'error', 'title' => 'Error'], 400);
-        }
-
     }
 
 }

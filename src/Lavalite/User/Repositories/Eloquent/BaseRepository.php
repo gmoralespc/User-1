@@ -1,8 +1,12 @@
 <?php
+
 namespace Lavalite\User\Repositories\Eloquent;
+
 
 use Closure;
 use Exception;
+use User;
+use Crypt;
 use Lavalite\User\Interfaces\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Container\Container as Application;
@@ -34,7 +38,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * @var \Closure
      */
-    protected $scopeQuery = null;
+    protected $userFilter = false;
 
     /**
      * @param Application $app
@@ -104,11 +108,14 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function all($columns = array('*'))
     {
 
-        if ( $this->model instanceof \Illuminate\Database\Eloquent\Builder ){
-            $results = $this->model->get($columns);
+        if ($this->userFilter) {
+            $userId  = User::users('id');
+
+            $results = $this->model->whereUserId($userId)->get($columns);
         } else {
             $results = $this->model->all($columns);
         }
+
 
         $this->resetModel();
 
@@ -124,8 +131,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function json($columns = array('*'))
     {
 
-        if ( $this->model instanceof \Illuminate\Database\Eloquent\Builder ){
-            $results = $this->model->get($columns)->toArray();
+        if ($this->userFilter) {
+            $userId  = User::users('id');
+
+            $results = $this->model->whereUserId($userId)->all($columns)->toArray();
         } else {
             $results = $this->model->all($columns)->toArray();
         }
@@ -144,8 +153,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function paginate($limit = null, $columns = array('*'))
     {
         $limit = is_null($limit) ? config('modal.pagination.limit', 15) : $limit;
-        $results = $this->model->paginate($limit, $columns);
+
+        if ($this->userFilter) {
+            $userId  = User::users('id');
+
+            $results = $this->model->whereUserId($userId)->paginate($limit, $columns);
+        } else {
+            $results = $this->model->paginate($limit, $columns);
+        }
+
         $this->resetModel();
+
         return $results;
     }
 
@@ -171,31 +189,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function find($id, $columns = array('*'))
     {
-        $model = $this->model->findOrFail($id, $columns);
-        $this->resetModel();
-        return $model;
-    }
+        $id     = $this->decrypt($id);
 
-    /**
-     * @param int $id
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
-    public function findById($id)
-    {
-        $model = $this->model->find($id);
-        $this->resetModel();
-        return $model;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
-    public function findByName($name)
-    {
-        $model =  $this->model->where('name', '=', $name)->first();
+        $model  = $this->model->find($id, $columns);
         $this->resetModel();
         return $model;
     }
@@ -210,6 +206,21 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function findOrNew($id, $columns = array('*'))
     {
         $model = $this->model->findOrNew($id, $columns);
+        $this->resetModel();
+        return $model;
+    }
+
+    /**
+     * Find data by slug field
+     *
+     * @param $field
+     * @param $value
+     * @param array $columns
+     * @return mixed
+     */
+    public function findBySlug($slug, $columns = array('*'))
+    {
+        $model = $this->model->whereSlug($slug)->first($columns);
         $this->resetModel();
         return $model;
     }
@@ -295,6 +306,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
 
         $model = $this->model->newInstance();
+        $attributes['user_id']  = User::users('id');
         $model->fill($attributes);
         $model->save();
         $this->resetModel();
@@ -305,14 +317,15 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Update a entity in modal by id
      *
+     * @throws ValidatorException
      * @param array $attributes
      * @param $id
      * @return mixed
      */
     public function update(array $attributes, $id)
     {
-
-        $model = $this->model->findOrFail($id);
+        $id     = $this->decrypt($id);
+        $model  = $this->model->findOrFail($id);
         $model->fill($attributes);
         $model->save();
 
@@ -329,8 +342,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function delete($id)
     {
-
-        $model = $this->find($id);
+        $id     = $this->decrypt($id);
+        return $this->model->destroy($id);
 
         $this->resetModel();
 
@@ -506,5 +519,34 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $this->model->setVisible($fields);
         return $this;
     }
+
+    /**
+     * Get the decrypted value
+     *
+     * @param int $id
+     * @return $id
+     */
+    private function decrypt($id)
+    {
+        if(is_numeric($id)) return $id;
+
+        try {
+            return  Crypt::decrypt($id);
+        } catch (Illuminate\Contracts\Encryption\DecryptException $e) {
+            return $id;
+        }
+    }
+
+    /**
+     * Set user filter variable
+     *
+     * @param bool $bool
+     * @return void
+     */
+    public function setUserFilter($bool = true)
+    {
+        $this -> userFilter = $bool;
+    }
+
 
 }

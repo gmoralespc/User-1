@@ -5,7 +5,7 @@ namespace Lavalite\User\Http\Requests;
 use App\Http\Requests\Request;
 use User;
 
-class RoleRequest extends Request {
+class UserAdminRequest extends Request {
 
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -16,18 +16,18 @@ class RoleRequest extends Request {
 	{
 		// Determine if the user is authorized to create an entry,
 		if($request->isMethod('POST') || $request->is('*/create'))
-			return User::can('user.role.create');
+			return User::can('user.user.create');
 
 		// Determine if the user is authorized to update an entry,
 		if($request->isMethod('PUT') || $request->isMethod('PATCH') || $request->is('*/edit'))
-			return User::can('user.role.edit');
+			return User::can('user.user.edit');
 
 		// Determine if the user is authorized to delete an entry,
 		if($request->isMethod('DELETE'))
-			return User::can('user.role.delete');
+			return User::can('user.user.delete');
 
 		// Determine if the user is authorized to view the module.
-		return User::can('user.role.view');
+		return User::can('user.user.view');
 	}
 
 	/**

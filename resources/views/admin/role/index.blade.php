@@ -26,6 +26,7 @@
 <table id="main-list" class="table table-striped table-bordered">
     <thead>
         <th>{!! trans('user::role.label.name')!!}</th>
+
     </thead>
 </table>
 @stop
@@ -36,9 +37,11 @@ var oTable;
 $(document).ready(function(){
     $('#entry-role').load('{{URL::to('admin/user/role/0')}}');
     oTable = $('#main-list').dataTable( {
-        "ajax": '{{ URL::to('/admin/user/role/list') }}',
+        "ajax": '{{ URL::to('/admin/user/role') }}',
         "columns": [
-        { "data": "name" },],
+            {data :'name'},
+
+        ],
         "roleLength": 50
     });
 

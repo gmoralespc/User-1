@@ -6,6 +6,25 @@ class UserTableSeeder extends Seeder
 {
     public function run()
     {
+        DB::table('permissions')->insert(array(
+            array(
+                'name' => 'user.permission.view',
+                'readable_name' => 'View Permission'
+            ),
+            array(
+                'name' => 'user.permission.create',
+                'readable_name' => 'Create Permission'
+            ),
+            array(
+                'name' => 'user.permission.edit',
+                'readable_name' => 'Update Permission'
+            ),
+            array(
+                'name' => 'user.permission.delete',
+                'readable_name' => 'Delete Permission'
+            )
+        ));
+
         DB::table('users')->insert(array(
 
             array(
