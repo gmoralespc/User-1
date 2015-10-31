@@ -37,32 +37,40 @@ class UserServiceProvider extends ServiceProvider {
 	public function register()
 	{
         $this->app->bind('user', function ($app) {
-            return $this->app->make('Lavalite\User\User');
+            return $app->make('Lavalite\User\User');
         });
 
         $this->app->bind(
-            'Lavalite\\User\\Interfaces\\RoleRepositoryInterface',
-            'Lavalite\\User\\Repositories\\Eloquent\\RoleRepository'
+            \Lavalite\User\Interfaces\RoleRepositoryInterface::class,
+            \Lavalite\User\Repositories\Eloquent\RoleRepository::class
         );
+
+        $this->app->singleton('user.role', function ($app) {
+            return $app->make(\Lavalite\User\Interfaces\RoleRepositoryInterface::class);
+        });
 
         $this->app->bind(
-            'Lavalite\\User\\Interfaces\\UserRepositoryInterface',
-            'Lavalite\\User\\Repositories\\Eloquent\\UserRepository'
+            \Lavalite\User\Interfaces\UserRepositoryInterface::class,
+            \Lavalite\User\Repositories\Eloquent\UserRepository::class
         );
+
+        $this->app->singleton('user.user', function ($app) {
+            return $app->make(\Lavalite\User\Interfaces\UserRepositoryInterface::class);
+        });
 
         $this->app->bind(
-            'Lavalite\\User\\Interfaces\\PermissionRepositoryInterface',
-            'Lavalite\\User\\Repositories\\Eloquent\\PermissionRepository'
+            \Lavalite\User\Interfaces\PermissionRepositoryInterface::class,
+            \Lavalite\User\Repositories\Eloquent\PermissionRepository::class
         );
 
+        $this->app->singleton('user.permission', function ($app) {
+            return $app->make(\Lavalite\User\Interfaces\PermissionRepositoryInterface::class);
+        });
 
         $this->app->singleton('user.auth', function ($app) {
             return $app['auth'];
         });
 
-        $this->app->singleton('user.auth', function ($app) {
-            return $app['auth'];
-        });
 	}
 
     /**
