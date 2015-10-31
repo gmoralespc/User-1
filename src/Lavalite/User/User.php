@@ -311,7 +311,7 @@ class User {
      */
     public function findRoleById($roleId)
     {
-        return $this->role->findById($roleId);
+        return $this->role->find($roleId);
     }
 
     /**
@@ -335,7 +335,7 @@ class User {
      */
     public function findPermissionById($permissionId)
     {
-        return $this->permission->findById($permissionId);
+        return $this->permission->find($permissionId);
     }
 
     /**
@@ -364,7 +364,7 @@ class User {
      */
     public function createRole($roleName)
     {
-        return $this->role->create($roleName);
+        return $this->role->create(['name' => $roleName]);
     }
 
     /**
@@ -375,7 +375,7 @@ class User {
      */
     public function createPermission($permissionName, $readableName = null)
     {
-        return $this->permission->create($permissionName, $readableName);
+        return $this->permission->create(['name' => $permissionName, 'readable_name' => $readableName]);
     }
 
     /**
