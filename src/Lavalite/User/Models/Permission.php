@@ -30,5 +30,25 @@ class Permission extends Model
         $this->table                = config('user.permission.table');
     }
 
+    /**
+     * Many-to-many permission-role relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany('Lavalite\User\Models\Role')->withPivot('value', 'expires');
+    }
+    /**
+     * Many-to-many permission-user relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function users()
+    {
+        return $this->belongsToMany('Lavalite\User\Models\User')->withPivot('value', 'expires');
+    }
+
+
 
 }

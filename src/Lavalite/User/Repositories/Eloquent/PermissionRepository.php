@@ -3,6 +3,7 @@
 namespace Lavalite\User\Repositories\Eloquent;
 
 use Lavalite\User\Interfaces\PermissionRepositoryInterface;
+use Carbon\Carbon;
 
 class PermissionRepository extends BaseRepository implements PermissionRepositoryInterface
 {
