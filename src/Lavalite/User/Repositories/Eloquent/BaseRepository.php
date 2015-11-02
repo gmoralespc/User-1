@@ -203,6 +203,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function findByName($name)
     {
+
         return $this->model->where('name', '=', $name)->first();
     }
 
