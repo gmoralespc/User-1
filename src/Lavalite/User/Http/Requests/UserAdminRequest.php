@@ -40,13 +40,17 @@ class UserAdminRequest extends Request {
 		// validation rule for create request.
 		if($request->isMethod('POST'))
 			return [
-				'name' => 'required'
-			];
+	            'name' => 'required|max:255',
+	            'email' => 'required|email|max:255|unique:users',
+	            'password' => 'required|confirmed|min:6',
+            ];
 
 		// Validation rule for update request.
 		if($request->isMethod('PUT') || $request->isMethod('PATCH'))
 			return [
-				'name' => 'required'
+	            'name' => 'required|max:255',
+	            'email' => 'required|email|max:255|unique:users',
+	            'password' => 'required|confirmed|min:6',
 			];
 
 		// Default validation rule.
