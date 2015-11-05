@@ -39,6 +39,7 @@ class Permission extends Model
     {
         return $this->belongsToMany('Lavalite\User\Models\Role')->withPivot('value', 'expires');
     }
+
     /**
      * Many-to-many permission-user relationship.
      *

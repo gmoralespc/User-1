@@ -16,6 +16,11 @@
                 -> label(trans('user::user.label.dob'))
                 -> placeholder(trans('user::user.placeholder.dob')) !!}
             </div>
+            <div class='col-md-12 col-sm-12'>
+                {!! Former::datetime('password')
+                -> label(trans('user::user.label.password'))
+                -> placeholder(trans('user::user.placeholder.password')) !!}
+            </div>
         </div>
         <!--
         <div class='col-md-3 col-sm-4'>
@@ -115,7 +120,7 @@
                     <tr>
                         <td>{{ ucfirst($role->name) }}</td>
                         <td>
-                            <input name="roles[{{ $role->id }}]" type="checkbox" {{ ( $user-> hasRole($role->name)) ? 'checked' : '' }} >
+                            <input name="roles[{{ $role->id }}]" type="checkbox" {{ ( $user-> hasRole($role->name)) ? 'checked' : '' }} value='{{ $role->id }}' >
                         </td>
                     </tr>
                     @endforeach
@@ -134,7 +139,7 @@
                         <td>{{ucfirst($keyPermission)}}</td>
                         <td>
                             @forelse($permission as $key => $val)
-                            &nbsp; <input name="permissions[{{ $keyPermission. '.' .$key }}]" type="checkbox" {{ ($user->can($keyPermission. ' ' .$key)) ? 'checked' : '' }} > {{$val}}
+                            &nbsp; <input name="permissions[{{ $keyPermission. '.' .$key }}]" type="checkbox" {{ (@array_key_exists($keyPermission. '.' .$key, $user->permissions)) ? 'checked' : '' }} value='1'> {{$val}}
                             @empty
                             No permissions assigned
                             @endforelse

@@ -18,6 +18,25 @@ class PermissionRepository extends BaseRepository implements PermissionRepositor
     }
 
     /**
+     * Returns all users with given role.
+     *
+     * @return mixed
+     */
+    public function groupedPermissions($grouped = false)
+    {
+        $result =  $this->model->orderBy('name')->lists('readable_name', 'name')->toArray();
+
+        $array = [];
+
+        foreach ($result as $key => $value) {
+            $key = explode('.', $key, 2);
+            @$array[$key[0]][$key[1]] = $value;
+        }
+        return $array;
+    }
+
+
+    /**
      * Create a new permission using the given name.
      *
      * @param string $permissionName

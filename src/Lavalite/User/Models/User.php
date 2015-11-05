@@ -28,7 +28,8 @@ class User extends Model implements
      * @var array
      */
     protected $casts = [
-        'photo' => 'array',
+        'photo'         => 'array',
+        'permissions'   => 'array'
     ];
 
     /**
@@ -85,11 +86,5 @@ class User extends Model implements
         return $this->created_at->format(config('cms.format.date'));
     }
 
-    /**
-     * The roles that belong to the user.
-     */
-    public function roles(){
-        return $this->belongsToMany('Lavalite\User\Models\Role');
-    }
 
 }

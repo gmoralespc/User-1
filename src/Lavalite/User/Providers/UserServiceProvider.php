@@ -26,7 +26,6 @@ class UserServiceProvider extends ServiceProvider {
 
         $this->app->register(\Laravel\Socialite\SocialiteServiceProvider::class);
 
-        include __DIR__ . '/../Http/routes.php';
 	}
 
 	/**
@@ -70,6 +69,10 @@ class UserServiceProvider extends ServiceProvider {
         $this->app->singleton('user.auth', function ($app) {
             return $app['auth'];
         });
+
+        //$this->app->register(\Lavalite\User\Providers\AuthServiceProvider::class);
+        $this->app->register(\Lavalite\User\Providers\EventServiceProvider::class);
+        $this->app->register(\Lavalite\User\Providers\RouteServiceProvider::class);
 
 	}
 

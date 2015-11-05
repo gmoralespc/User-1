@@ -29,6 +29,12 @@ return [
 
     "name" 			=> "Permission",
     "names" 		=> "Permissions",
+
+    // Tab labels
+    "tab" => [
+            'name'  => 'Name'
+    ],
+
     // Texts  for the module
     "text" => [
         'preview' => 'Click on the below list for preview'

@@ -2,13 +2,11 @@
 
 namespace Lavalite\User\Models;
 
-use Lavalite\User\Traits\Permissions\RoleHasPermissions;
 use Illuminate\Database\Eloquent\Model;
 
 
 class Role extends Model
 {
-    use RoleHasPermissions;
 
     /**
      * Initialiaze page modal
@@ -22,6 +20,16 @@ class Role extends Model
     }
 
     /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'permissions'   => 'array'
+    ];
+
+
+    /**
      * Initialize the modal variables.
      *
      * @return void
@@ -31,12 +39,12 @@ class Role extends Model
         $this->fillable             = config('user.role.fillable');
         $this->table                = config('user.role.table');
     }
+
     /**
      * The users that belong to the role.
      */
     public function users(){
         return $this->belongsToMany('Lavalite\User\Models\User');
     }
-
 
 }

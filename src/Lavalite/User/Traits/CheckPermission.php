@@ -3,14 +3,14 @@
 namespace Lavalite\User\Traits;
 
 use Lavalite\User\Traits\Users\HasRoles;
-use Lavalite\User\Traits\Users\HasPermissions;
+use Lavalite\User\Traits\Permissions\InteractsWithPermissions;
 
 /**
  * Trait HasPermission.
  */
 trait CheckPermission
 {
-    use HasRoles, HasPermissions;
+    use HasRoles, InteractsWithPermissions;
 
     /**
      * @var \Illuminate\Support\Collection
@@ -23,6 +23,7 @@ trait CheckPermission
     private $cachedRolePermissions;
 
     /**
+     *
      * Returns if the current user has the given permission.
      * User permissions override role permissions.
      *
@@ -33,9 +34,9 @@ trait CheckPermission
      */
     public function hasPermission($permission, $force = false)
     {
-        $permissions = $this->getAllPermissions($force)->lists('name')->toArray();
+        $permissions = $this->getAllPermissions($force);
 
-        return in_array($permission, $permissions);
+        return array_key_exists($permission, $permissions);
     }
 
     /**
@@ -78,9 +79,9 @@ trait CheckPermission
      */
     public function roleHasPermission($permission, $force = false)
     {
-        $permissions = $this->getRolesPermissions($force)->lists('name')->toArray();
+        $permissions = $this->getRolesPermissions($force);
 
-        return in_array($permission, $permissions);
+        return array_key_exists($permission, $permissions);
     }
 
     /**
@@ -118,9 +119,15 @@ trait CheckPermission
      */
     protected function getFreshRolesPermissions()
     {
-        $roles = $this->roles()->get(['id'])->lists('id')->toArray();
+        $roles = $this->roles()->get(['permissions']);
 
-        return app('user.permission')->getByRoles($roles);
+        $permissions    = [];
+
+        foreach($roles as $role){
+            $permissions = array_merge($permissions, $role->permissions);
+        }
+
+        return $permissions;
     }
 
     /**
@@ -132,16 +139,9 @@ trait CheckPermission
     {
         $permissionsRoles = $this->getRolesPermissions(true);
 
-        $permissions = app('user.permission')->getActivesByUser($this);
-
-        $permissions = $permissions->merge($permissionsRoles)
-            ->map(function ($permission) {
-                unset($permission->pivot, $permission->created_at, $permission->updated_at);
-
-                return $permission;
-            });
-
-        return $permissions->toBase();
+        $permissions =  empty($this->permissions) ? [] : $this->permissions;
+        $permissions = array_merge($permissions, $permissionsRoles);
+        return $permissions;
     }
 
     /**

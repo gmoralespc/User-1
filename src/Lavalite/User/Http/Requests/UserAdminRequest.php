@@ -14,6 +14,8 @@ class UserAdminRequest extends Request {
 	 */
 	public function authorize(\Illuminate\Http\Request $request)
 	{
+		$user = $this->route('user');
+
 		// Determine if the user is authorized to create an entry,
 		if($request->isMethod('POST') || $request->is('*/create'))
 			return User::can('user.user.create');
@@ -37,20 +39,20 @@ class UserAdminRequest extends Request {
 	 */
 	public function rules(\Illuminate\Http\Request $request)
 	{
+		$user = $this->route('user');
 		// validation rule for create request.
 		if($request->isMethod('POST'))
 			return [
 	            'name' => 'required|max:255',
 	            'email' => 'required|email|max:255|unique:users',
-	            'password' => 'required|confirmed|min:6',
+	            'password' => 'required|min:6',
             ];
 
 		// Validation rule for update request.
 		if($request->isMethod('PUT') || $request->isMethod('PATCH'))
 			return [
 	            'name' => 'required|max:255',
-	            'email' => 'required|email|max:255|unique:users',
-	            'password' => 'required|confirmed|min:6',
+	            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
 			];
 
 		// Default validation rule.

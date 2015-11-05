@@ -1,6 +1,7 @@
 <?php namespace Lavalite\User\Repositories\Eloquent;
 
 use Lavalite\User\Interfaces\UserRepositoryInterface;
+use User;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
@@ -35,5 +36,26 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         return $this->model->attachPermission($permissionName, $options);
     }
+
+    /**
+     * Save a new entity in modal
+     *
+     * @throws ValidatorException
+     * @param array $attributes
+     * @return mixed
+     */
+    public function create(array $attributes)
+    {
+
+        $model = $this->model->newInstance();
+        $attributes['user_id']  = User::users('id');
+        $model->fill($attributes);
+        $model->password    = bcrypt($attributes['password']);
+        $model->save();
+        $this->resetModel();
+
+        return $model;
+    }
+
 
 }

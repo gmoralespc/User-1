@@ -420,26 +420,6 @@ class User {
 		return  $this->role->users($role);
 	}
 
-	/**
-	 * Returns all users with given role.
-	 *
-	 * @return mixed
-	 */
-	public function permissions($grouped = false)
-	{
-		$this->permission->orderBy('readable_name');
-		$result =  $this->permission->lists('readable_name', 'name')->toArray();
-		if (!$grouped) return $result;
-
-		$array = array();
-		foreach ($result as $key => $value) {
-			$key = explode('.', $key, 2);
-			@$array[$key[0]][$key[1]] = $value;
-		}
-		return $array;
-
-	}
-
     /**
      * Return the profile update page.
      *

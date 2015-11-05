@@ -3,9 +3,11 @@ namespace Lavalite\User\Http\Controllers;
 
 use Former;
 use Response;
+use Lavalite\User\Models\Role;
 use App\Http\Controllers\AdminController as AdminController;
 use Lavalite\User\Http\Requests\RoleAdminRequest;
 use Lavalite\User\Interfaces\RoleRepositoryInterface;
+use Lavalite\User\Interfaces\PermissionRepositoryInterface;
 
 /**
  *
@@ -15,12 +17,20 @@ use Lavalite\User\Interfaces\RoleRepositoryInterface;
 class RoleAdminController extends AdminController
 {
     /**
+     * @var Permissions
+     *
+     */
+    protected $permission;
+
+    /**
      * Initialize role controller
      * @param type RoleRepositoryInterface $role
      * @return type
      */
-    public function __construct(RoleRepositoryInterface $role)
+    public function __construct(RoleRepositoryInterface $role,
+                                PermissionRepositoryInterface $permission)
     {
+        $this->permission = $permission;
         $this->model = $role;
         parent::__construct();
     }
@@ -55,11 +65,9 @@ class RoleAdminController extends AdminController
      *
      * @return Response
      */
-    public function show(RoleAdminRequest $request, $id)
+    public function show(RoleAdminRequest $request, Role $role)
     {
-        $role = $this->model->find($id);
-
-        if (empty($role)) {
+        if (!$role->exists) {
             if ($request->wantsJson()) {
                 return [];
             }
@@ -71,9 +79,11 @@ class RoleAdminController extends AdminController
             return $role;
         }
 
+        $permissions        = $this->permission->groupedPermissions(true);
+        $rolePermissions    = [];
         Former::populate($role);
 
-        return view('user::admin.role.show', compact('role'));
+        return view('user::admin.role.show', compact('role', 'permissions', 'rolePermissions'));
     }
 
     /**
@@ -86,8 +96,8 @@ class RoleAdminController extends AdminController
     {
         $role = $this->model->findOrNew(0);
         Former::populate($role);
-
-        return view('user::admin.role.create', compact('role'));
+        $permissions  = $this->permission->groupedPermissions(true);
+        return view('user::admin.role.create', compact('role', 'permissions'));
     }
 
     /**
@@ -114,13 +124,14 @@ class RoleAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function edit(RoleAdminRequest $request, $id)
+    public function edit(RoleAdminRequest $request, Role $role)
     {
-        $role = $this->model->find($id);
+
+        $permissions  = $this->permission->groupedPermissions(true);
 
         Former::populate($role);
-
-        return view('user::admin.role.edit', compact('role'));
+        $rolePermissions    = [];
+        return view('user::admin.role.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 
     /**
@@ -130,11 +141,11 @@ class RoleAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function update(RoleAdminRequest $request, $id)
+    public function update(RoleAdminRequest $request, Role $role)
     {
         try {
             $attributes         = $request->all();
-            $role       = $this->model->update($attributes, $id);
+            $role->update($attributes);
             return $this->success(trans('messages.success.updated', ['Module' => trans('user::role.name')]));
         } catch (Exception $e) {
             return $this->error($e->getMessage());
@@ -147,10 +158,10 @@ class RoleAdminController extends AdminController
      * @param  int  $id
      * @return Response
      */
-    public function destroy(RoleAdminRequest $request, $id)
+    public function destroy(RoleAdminRequest $request, Role $role)
     {
         try {
-            $this->model->delete($id);
+            $role->delete();
             return $this->success(trans('message.success.deleted', ['Module' => trans('user::role.name')]), 200);
         } catch (Exception $e) {
             return $this->error($e->getMessage());

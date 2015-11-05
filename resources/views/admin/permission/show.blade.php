@@ -11,7 +11,7 @@
     <div class="nav-tabs-custom">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs primary">
-            <li class="active"><a href="#details" data-toggle="tab">  {{ trans('user::permission.name') }}</a></li>
+            <li class="active"><a href="#details" data-toggle="tab"> {{ trans('user::permission.tab.name') }}</a></li>
         </ul>
         {!!Former::vertical_open()
         ->id('show-user-permission')
