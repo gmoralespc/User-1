@@ -4,27 +4,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class PermissionTableSeeder extends Seeder
 {
-
     public function run()
     {
-        DB::table('permissions')->insert(array(
-            array(
-                'name' => 'user.user.view',
+        DB::table('permissions')->insert([
+            [
+                'name'          => 'user.user.view',
                 'readable_name' => 'View user'
-            ),
-            array(
-                'name' => 'user.user.create',
+            ],
+            [
+                'name'          => 'user.user.create',
                 'readable_name' => 'Create user'
-            ),
-            array(
-                'name' => 'user.user.edit',
+            ],
+            [
+                'name'          => 'user.user.edit',
                 'readable_name' => 'Update user'
-            ),
-            array(
-                'name' => 'user.user.delete',
+            ],
+            [
+                'name'          => 'user.user.delete',
                 'readable_name' => 'Delete user'
-            )
+            ]
 
-        ));
+        ]);
     }
 }

@@ -4,10 +4,8 @@ namespace Lavalite\User\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class Permission extends Model
 {
-
     /**
      * Initialiaze page modal
      *
@@ -49,7 +47,4 @@ class Permission extends Model
     {
         return $this->belongsToMany('Lavalite\User\Models\User')->withPivot('value', 'expires');
     }
-
-
-
 }

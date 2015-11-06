@@ -5,7 +5,6 @@ use Former;
 use Response;
 use App\Http\Controllers\AdminController;
 use Lavalite\User\Models\Permission;
-
 use Lavalite\User\Http\Requests\PermissionAdminRequest;
 use Lavalite\User\Interfaces\PermissionRepositoryInterface;
 
@@ -16,7 +15,6 @@ use Lavalite\User\Interfaces\PermissionRepositoryInterface;
 
 class PermissionAdminController extends AdminController
 {
-
     /**
      * Initialize permission controller
      * @param type PermissionRepositoryInterface $permission
@@ -35,14 +33,13 @@ class PermissionAdminController extends AdminController
      */
     public function index(PermissionAdminRequest $request)
     {
-        if($request->wantsJson()){
-
+        if ($request->wantsJson()) {
             $array = $this->model->json();
             foreach ($array as $key => $row) {
                 $array[$key] = array_only($row, config('user.permission.listfields'));
             }
 
-            return array('data' => $array);
+            return ['data' => $array];
         }
 
         $this->theme->prependTitle(trans('user::permission.names').' :: ');
@@ -60,22 +57,21 @@ class PermissionAdminController extends AdminController
      */
     public function show(PermissionAdminRequest $request, Permission $permission)
     {
-
         if (!$permission->exists) {
-
-            if($request->wantsJson())
+            if ($request->wantsJson()) {
                 return [];
+            }
 
             return view('user::admin.permission.new');
         }
 
-        if($request->wantsJson())
+        if ($request->wantsJson()) {
             return $permission;
+        }
 
         Former::populate($permission);
 
         return view('user::admin.permission.show', compact('permission'));
-
     }
 
     /**
@@ -117,7 +113,6 @@ class PermissionAdminController extends AdminController
      */
     public function edit(PermissionAdminRequest $request, Permission $permission)
     {
-
         Former::populate($permission);
 
         return view('user::admin.permission.edit', compact('permission'));
@@ -156,5 +151,4 @@ class PermissionAdminController extends AdminController
             return $this->error($e->getMessage());
         }
     }
-
 }

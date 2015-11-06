@@ -6,7 +6,6 @@ use Response;
 use User;
 use Lavalite\User\Models\User as UserModal;
 use App\Http\Controllers\AdminController as AdminController;
-
 use Lavalite\User\Http\Requests\UserAdminRequest;
 use Lavalite\User\Interfaces\UserRepositoryInterface;
 use Lavalite\User\Interfaces\RoleRepositoryInterface;
@@ -19,7 +18,6 @@ use Lavalite\User\Interfaces\PermissionRepositoryInterface;
 
 class UserAdminController extends AdminController
 {
-
     /**
      * @var Permissions
      *
@@ -52,15 +50,15 @@ class UserAdminController extends AdminController
      *
      * @return Response
      */
-    public function index(UserAdminRequest $request, $role = NULL)
+    public function index(UserAdminRequest $request, $role = null)
     {
-        if($request->wantsJson()){
-            if (!$request->has('role')){
+        if ($request->wantsJson()) {
+            if (!$request->has('role')) {
                 $array = $this->model->json(config('user.user.listfields'));
-                return array('data' => $array);
+                return ['data' => $array];
             }
             $array = $this->roles->users($request->get('role'), config('user.role.listfields'));
-            return array('data' => $array);
+            return ['data' => $array];
         }
 
         $this->theme->prependTitle(trans('user::user.names').' :: ');
@@ -79,17 +77,17 @@ class UserAdminController extends AdminController
      */
     public function show(UserAdminRequest $request, UserModal $user)
     {
-
         if (!$user->exists) {
-
-            if($request->wantsJson())
+            if ($request->wantsJson()) {
                 return [];
+            }
 
             return view('user::admin.user.new');
         }
 
-        if($request->wantsJson())
+        if ($request->wantsJson()) {
             return $user;
+        }
 
         $permissions  = $this->permission->groupedPermissions(true);
         $roles  = $this->roles->all();
@@ -97,7 +95,6 @@ class UserAdminController extends AdminController
         Former::populate($user);
 
         return view('user::admin.user.show', compact('user', 'roles', 'permissions'));
-
     }
 
     /**
@@ -184,5 +181,4 @@ class UserAdminController extends AdminController
             return $this->error($e->getMessage());
         }
     }
-
 }

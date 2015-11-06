@@ -42,14 +42,13 @@ class RoleAdminController extends AdminController
      */
     public function index(RoleAdminRequest $request)
     {
-        if($request->wantsJson()){
-
+        if ($request->wantsJson()) {
             $array = $this->model->json();
             foreach ($array as $key => $row) {
                 $array[$key] = array_only($row, config('user.role.listfields'));
             }
 
-            return array('data' => $array);
+            return ['data' => $array];
         }
 
         $this->theme->prependTitle(trans('user::role.names').' :: ');
@@ -126,7 +125,6 @@ class RoleAdminController extends AdminController
      */
     public function edit(RoleAdminRequest $request, Role $role)
     {
-
         $permissions  = $this->permission->groupedPermissions(true);
 
         Former::populate($role);

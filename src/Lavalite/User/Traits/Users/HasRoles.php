@@ -88,11 +88,11 @@ trait HasRoles
      */
     public function syncRoles($roles)
     {
-        if(is_array($roles))
+        if (is_array($roles)) {
             return $this->roles()->sync($roles);
+        }
 
         return $this->roles()->sync([]);
-
     }
 
     /**

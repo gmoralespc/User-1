@@ -1,5 +1,5 @@
 <?php
-return array(
+return [
 
     /*
     |--------------------------------------------------------------------------
@@ -11,6 +11,6 @@ return array(
     |
     */
 
-    "name" 			=> "User",
-    "names" 		=> "Users",
-);
+    "name"            => "User",
+    "names"           => "Users",
+];

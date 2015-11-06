@@ -5,7 +5,6 @@ use User;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
-
     /**
      * Specify Model class name
      *
@@ -46,7 +45,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      */
     public function create(array $attributes)
     {
-
         $model = $this->model->newInstance();
         $attributes['user_id']  = User::users('id');
         $model->fill($attributes);
@@ -56,6 +54,4 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
         return $model;
     }
-
-
 }

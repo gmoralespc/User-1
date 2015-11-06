@@ -1,4 +1,5 @@
 <?php namespace Lavalite\User\Providers;
+
 /**
  * Part of the Lavalite package.
  *
@@ -10,31 +11,30 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class UserServiceProvider extends ServiceProvider {
-
-	/**
-	 * Boot the service provider.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
+class UserServiceProvider extends ServiceProvider
+{
+    /**
+     * Boot the service provider.
+     *
+     * @return void
+     */
+    public function boot()
+    {
         $this->loadViewsFrom(__DIR__.'/../../../../resources/views', 'user');
         $this->loadTranslationsFrom(__DIR__.'/../../../../resources/lang', 'user');
 
         $this->publishResources();
 
         $this->app->register(\Laravel\Socialite\SocialiteServiceProvider::class);
+    }
 
-	}
-
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
         $this->app->bind('user', function ($app) {
             return $app->make('Lavalite\User\User');
         });
@@ -73,8 +73,7 @@ class UserServiceProvider extends ServiceProvider {
         //$this->app->register(\Lavalite\User\Providers\AuthServiceProvider::class);
         $this->app->register(\Lavalite\User\Providers\EventServiceProvider::class);
         $this->app->register(\Lavalite\User\Providers\RouteServiceProvider::class);
-
-	}
+    }
 
     /**
      * Get the services provided by the provider.
@@ -113,5 +112,4 @@ class UserServiceProvider extends ServiceProvider {
         $this->publishes([__DIR__.'/../../../../database/seeds/'
                         => base_path('database/seeds')], 'seeds');
     }
-
 }

@@ -19,8 +19,8 @@ use Lavalite\User\Interfaces\PermissionRepositoryInterface;
 /**
  * User wrapper class.
  */
-class User {
-
+class User
+{
     /**
      * @var Application  variable
      */
@@ -31,14 +31,14 @@ class User {
      */
     protected $user;
 
-	/**
-	 * @var permission repository variable
-	 */
+    /**
+     * @var permission repository variable
+     */
     protected $permission;
 
-	/**
-	 * @var role repository variable
-	 */
+    /**
+     * @var role repository variable
+     */
     protected $role;
 
     /**
@@ -53,108 +53,108 @@ class User {
     public function __construct(Application $app,
                                 UserRepositoryInterface $user,
                                 RoleRepositoryInterface $role,
-    							PermissionRepositoryInterface $permission)
+                                PermissionRepositoryInterface $permission)
     {
         $this->app          = $app;
         $this->user         = $user;
-        $this->role     	= $role;
+        $this->role         = $role;
         $this->permission   = $permission;
     }
 
-	/**
-	 * Registers a user by giving the required credentials
-	 * and an optional flag for whether to activate the user.
-	 *
-	 * @param  array  $credentials
-	 * @param  bool   $activate
-	 * @return \Lavalite\User\Interfaces\UserInterface
-	 */
-	public function create(array $credentials, $active = false)
-	{
-		$credentials = $credentials + ['active' => $active];
-		return $this->user->create($credentials);
-	}
+    /**
+     * Registers a user by giving the required credentials
+     * and an optional flag for whether to activate the user.
+     *
+     * @param  array  $credentials
+     * @param  bool   $activate
+     * @return \Lavalite\User\Interfaces\UserInterface
+     */
+    public function create(array $credentials, $active = false)
+    {
+        $credentials = $credentials + ['active' => $active];
+        return $this->user->create($credentials);
+    }
 
-	/**
-	 * Attempts to authenticate the given user
-	 * according to the passed credentials.
-	 *
-	 * @param  array  $credentials
-	 * @param  bool   $remember
-	 * @return bool
-	 */
-	public function attempt(array $credentials, $remember = false)
-	{
-		return $this->app['user.auth']->attempt($credentials, $remember);
-	}
+    /**
+     * Attempts to authenticate the given user
+     * according to the passed credentials.
+     *
+     * @param  array  $credentials
+     * @param  bool   $remember
+     * @return bool
+     */
+    public function attempt(array $credentials, $remember = false)
+    {
+        return $this->app['user.auth']->attempt($credentials, $remember);
+    }
 
-	/**
-	 * Alias for authenticating with the remember flag checked.
-	 *
-	 * @param  array  $credentials
-	 * @return bool
-	 */
-	public function attemptAndRemember(array $credentials)
-	{
-		return $this->app['user.auth']->attempt($credentials, true);
-	}
+    /**
+     * Alias for authenticating with the remember flag checked.
+     *
+     * @param  array  $credentials
+     * @return bool
+     */
+    public function attemptAndRemember(array $credentials)
+    {
+        return $this->app['user.auth']->attempt($credentials, true);
+    }
 
-	/**
-	 * Check to see if the user is logged in and activated, and hasn't been banned or suspended.
-	 *
-	 * @return bool
-	 */
-	public function check()
-	{
-		return $this->app['user.auth']->check();
-	}
+    /**
+     * Check to see if the user is logged in and activated, and hasn't been banned or suspended.
+     *
+     * @return bool
+     */
+    public function check()
+    {
+        return $this->app['user.auth']->check();
+    }
 
-	/**
-	 * Logs in the given user and sets properties
-	 * in the session.
-	 *
-	 * @param  array $credentials
-	 * @param  bool  $remember
-	 * @return void
-	 */
-	public function login(Authenticatable $user, $remember = false)
-	{
-		// Authentication attempt usng laravel native auth class
-		return $this->app['user.auth']->attempt($user, $remember);
-	}
+    /**
+     * Logs in the given user and sets properties
+     * in the session.
+     *
+     * @param  array $credentials
+     * @param  bool  $remember
+     * @return void
+     */
+    public function login(Authenticatable $user, $remember = false)
+    {
+        // Authentication attempt usng laravel native auth class
+        return $this->app['user.auth']->attempt($user, $remember);
+    }
 
-	/**
-	 * Logs in user for a single request
-	 * in the session.
-	 *
-	 * @param  array $credentials
-	 * @return bool
-	 */
-	public function once(array $user)
-	{
-		return $this->app['user.auth']->once($user);
-	}
+    /**
+     * Logs in user for a single request
+     * in the session.
+     *
+     * @param  array $credentials
+     * @return bool
+     */
+    public function once(array $user)
+    {
+        return $this->app['user.auth']->once($user);
+    }
 
-	/**
-	 * Logs the current user out.
-	 *
-	 * @return void
-	 */
-	public function logout()
-	{
-		$this->app['user.auth']->logout();
-	}
+    /**
+     * Logs the current user out.
+     *
+     * @return void
+     */
+    public function logout()
+    {
+        $this->app['user.auth']->logout();
+    }
 
-	/**
-	 * Returns the current user being used by Lavalite, if any.
-	 *
-	 * @return Laravel user object
-	 */
-	public function user()
-	{
-		// We will lazily attempt to load our user
-		return $this->app['user.auth']->user();
-	}
+    /**
+     * Returns the current user being used by Lavalite, if any.
+     *
+     * @return Laravel user object
+     */
+    public function user()
+    {
+        // We will lazily attempt to load our user
+        return $this->app['user.auth']->user();
+    }
 
     /**
      * Get the current authenticated user.
@@ -390,35 +390,35 @@ class User {
         return $this->javascript;
     }
 
-	/**
-	 * Returns the specific details of current user.
-	 *
-	 * @return mixed
-	 */
-	public function users($field)
-	{
-		return  $this->user()->$field;
-	}
+    /**
+     * Returns the specific details of current user.
+     *
+     * @return mixed
+     */
+    public function users($field)
+    {
+        return  $this->user()->$field;
+    }
 
-	/**
-	 * Returns all roles avilable .
-	 *
-	 * @return mixed
-	 */
-	public function roles()
-	{
-		return  $this->role->all(['id', 'name']);
-	}
+    /**
+     * Returns all roles avilable .
+     *
+     * @return mixed
+     */
+    public function roles()
+    {
+        return  $this->role->all(['id', 'name']);
+    }
 
-	/**
-	 * Returns all roles avilable .
-	 *
-	 * @return mixed
-	 */
-	public function usersWithRole($role)
-	{
-		return  $this->role->users($role);
-	}
+    /**
+     * Returns all roles avilable .
+     *
+     * @return mixed
+     */
+    public function usersWithRole($role)
+    {
+        return  $this->role->users($role);
+    }
 
     /**
      * Return the profile update page.
@@ -451,9 +451,6 @@ class User {
      */
     public function count()
     {
-       return 0;
+        return 0;
     }
-
-
 }
-
