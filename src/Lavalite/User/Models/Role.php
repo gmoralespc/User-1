@@ -4,10 +4,8 @@ namespace Lavalite\User\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class Role extends Model
 {
-
     /**
      * Initialiaze page modal
      *
@@ -43,8 +41,8 @@ class Role extends Model
     /**
      * The users that belong to the role.
      */
-    public function users(){
+    public function users()
+    {
         return $this->belongsToMany('Lavalite\User\Models\User');
     }
-
 }

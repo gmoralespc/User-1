@@ -12,7 +12,7 @@ class PermissionRepository extends BaseRepository implements PermissionRepositor
      *
      * @return string
      */
-    function model()
+    public function model()
     {
         return "Lavalite\\User\\Models\\Permission";
     }
@@ -90,5 +90,4 @@ class PermissionRepository extends BaseRepository implements PermissionRepositor
             })
             ->get();
     }
-
 }

@@ -2,7 +2,6 @@
 
 namespace Lavalite\User\Repositories\Eloquent;
 
-
 use Closure;
 use Exception;
 use User;
@@ -19,7 +18,6 @@ use Illuminate\Container\Container as Application;
 
 abstract class BaseRepository implements BaseRepositoryInterface
 {
-
     /**
      * @var Application
      */
@@ -33,7 +31,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * @var array
      */
-    protected $fieldSearchable = array();
+    protected $fieldSearchable = [];
 
     /**
      * @var \Closure
@@ -55,7 +53,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function boot()
     {
-
     }
 
     /**
@@ -94,7 +91,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param \Closure $scope
      * @return $this
      */
-    public function scopeQuery(\Closure $scope){
+    public function scopeQuery(\Closure $scope)
+    {
         $this->scopeQuery = $scope;
         return $this;
     }
@@ -105,9 +103,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function all($columns = array('*'))
+    public function all($columns = ['*'])
     {
-
         if ($this->userFilter) {
             $userId  = User::users('id');
 
@@ -128,9 +125,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function json($columns = array('*'))
+    public function json($columns = ['*'])
     {
-
         if ($this->userFilter) {
             $userId  = User::users('id');
 
@@ -150,7 +146,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function paginate($limit = null, $columns = array('*'))
+    public function paginate($limit = null, $columns = ['*'])
     {
         $limit = is_null($limit) ? config('modal.pagination.limit', 15) : $limit;
 
@@ -187,7 +183,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function find($id, $columns = array('*'))
+    public function find($id, $columns = ['*'])
     {
         $id     = $this->decrypt($id);
 
@@ -203,7 +199,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function findByName($name)
     {
-
         return $this->model->where('name', '=', $name)->first();
     }
 
@@ -214,7 +209,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function findOrNew($id, $columns = array('*'))
+    public function findOrNew($id, $columns = ['*'])
     {
         $model = $this->model->findOrNew($id, $columns);
         $this->resetModel();
@@ -229,7 +224,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function findBySlug($slug, $columns = array('*'))
+    public function findBySlug($slug, $columns = ['*'])
     {
         $model = $this->model->whereSlug($slug)->first($columns);
         $this->resetModel();
@@ -244,9 +239,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function findByField($field, $value = null, $columns = array('*'))
+    public function findByField($field, $value = null, $columns = ['*'])
     {
-        $model = $this->model->where($field,'=',$value)->get($columns);
+        $model = $this->model->where($field, '=', $value)->get($columns);
         $this->resetModel();
         return $model;
     }
@@ -258,15 +253,14 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function findWhere( array $where , $columns = array('*'))
+    public function findWhere(array $where, $columns = ['*'])
     {
-
         foreach ($where as $field => $value) {
-            if ( is_array($value) ) {
+            if (is_array($value)) {
                 list($field, $condition, $val) = $value;
-                $this->model = $this->model->where($field,$condition,$val);
+                $this->model = $this->model->where($field, $condition, $val);
             } else {
-                $this->model = $this->model->where($field,'=',$value);
+                $this->model = $this->model->where($field, '=', $value);
             }
         }
 
@@ -284,7 +278,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function findWhereIn( $field, array $values, $columns = array('*'))
+    public function findWhereIn($field, array $values, $columns = ['*'])
     {
         $model = $this->model->whereIn($field, $values)->get($columns);
         $this->resetModel();
@@ -299,7 +293,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function findWhereNotIn( $field, array $values, $columns = array('*'))
+    public function findWhereNotIn($field, array $values, $columns = ['*'])
     {
         $model = $this->model->whereNotIn($field, $values)->get($columns);
         $this->resetModel();
@@ -315,7 +309,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function create(array $attributes)
     {
-
         $model = $this->model->newInstance();
         $attributes['user_id']  = User::users('id');
         $model->fill($attributes);
@@ -386,7 +379,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function where($column, $operator, $value)
     {
-
         $this->model = $this->model -> where($column, $operator, $value);
         return $this;
     }
@@ -402,7 +394,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function orWhere($column, $operator, $value)
     {
-
         $this->model = $this->model -> orWhere($column, $operator, $value);
         return $this;
     }
@@ -417,7 +408,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function whereBetween($column, array $value)
     {
-
         $this->model = $this->model -> whereBetween($column, $value);
         return $this;
     }
@@ -432,7 +422,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function whereNotBetween($column, array $value)
     {
-
         $this->model = $this->model -> whereNotBetween($column, $value);
         return $this;
     }
@@ -447,7 +436,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function whereIn($column, array $value)
     {
-
         $this->model = $this->model -> whereIn($column, $value);
         return $this;
     }
@@ -462,7 +450,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function whereNotIn($column, array $value)
     {
-
         $this->model = $this->model -> whereNotIn($column, $value);
         return $this;
     }
@@ -476,7 +463,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function whereNull($column)
     {
-
         $this->model = $this->model -> whereNull($column);
         return $this;
     }
@@ -490,7 +476,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function whereNotNull($column)
     {
-
         $this->model = $this->model -> whereNotNull($column);
         return $this;
     }
@@ -539,7 +524,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     private function decrypt($id)
     {
-        if(is_numeric($id)) return $id;
+        if (is_numeric($id)) {
+            return $id;
+        }
 
         try {
             return  Crypt::decrypt($id);
@@ -558,6 +545,4 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         $this -> userFilter = $bool;
     }
-
-
 }

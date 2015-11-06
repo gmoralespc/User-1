@@ -3,7 +3,6 @@
 namespace Lavalite\User\Providers;
 
 use Lavalite\User\Models\User;
-
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Lavalite\User\Interfaces\UserRepositoryInterface;
@@ -27,18 +26,17 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
-
-        $router->bind('user', function($id){
+        $router->bind('user', function ($id) {
             $user = $this->app->make(\Lavalite\User\Interfaces\UserRepositoryInterface::class);
             return  $user -> find($id);
         });
 
-        $router->bind('role', function($id){
+        $router->bind('role', function ($id) {
             $role = $this->app->make(\Lavalite\User\Interfaces\RoleRepositoryInterface::class);
             return  $role -> find($id);
         });
 
-        $router->bind('permission', function($id){
+        $router->bind('permission', function ($id) {
             $permission = $this->app->make(\Lavalite\User\Interfaces\PermissionRepositoryInterface::class);
             return  $permission -> find($id);
         });

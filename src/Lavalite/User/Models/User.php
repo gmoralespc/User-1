@@ -69,11 +69,11 @@ class User extends Model implements
             return URL::to($photo['folder'] . '/' . $photo['file']);
         }
 
-        if ($this->sex == 'Female')
+        if ($this->sex == 'Female') {
             return URL::to('images/avatar/female.png');
+        }
 
         return URL::to('images/avatar/male.png');
-
     }
 
     /**
@@ -85,6 +85,4 @@ class User extends Model implements
     {
         return $this->created_at->format(config('cms.format.date'));
     }
-
-
 }

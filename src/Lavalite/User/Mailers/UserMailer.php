@@ -1,4 +1,5 @@
 <?php namespace Lavalite\User\Mailers;
+
 class UserMailer extends Mailer
 {
     /**
@@ -8,9 +9,9 @@ class UserMailer extends Mailer
      */
     public function subscribe($events)
     {
-        $events->listen('user.signup', 		'Lavalite\User\Mailers\UserMailer@welcome');
-        $events->listen('user.resend', 		'Lavalite\User\Mailers\UserMailer@welcome');
-        $events->listen('user.forgot',      'Lavalite\User\Mailers\UserMailer@forgotPassword');
+        $events->listen('user.signup', 'Lavalite\User\Mailers\UserMailer@welcome');
+        $events->listen('user.resend', 'Lavalite\User\Mailers\UserMailer@welcome');
+        $events->listen('user.forgot', 'Lavalite\User\Mailers\UserMailer@forgotPassword');
         $events->listen('user.newpassword', 'Lavalite\User\Mailers\UserMailer@newPassword');
     }
     /**
@@ -43,7 +44,7 @@ class UserMailer extends Mailer
         $data['userId']     = $userId;
         $data['resetCode']  = $resetCode;
         $data['email']      = $email;
-        return $this->sendTo($email, $subject, $view, $data );
+        return $this->sendTo($email, $subject, $view, $data);
     }
     /**
      * Email New Password info to user.
@@ -58,6 +59,6 @@ class UserMailer extends Mailer
         $view                   = 'user::emails.auth.newpassword';
         $data['newPassword']    = $newPassword;
         $data['email']          = $email;
-        return $this->sendTo($email, $subject, $view, $data );
+        return $this->sendTo($email, $subject, $view, $data);
     }
 }

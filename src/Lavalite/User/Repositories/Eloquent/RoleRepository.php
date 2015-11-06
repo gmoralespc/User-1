@@ -11,7 +11,7 @@ class RoleRepository extends BaseRepository implements RoleRepositoryInterface
      *
      * @return string
      */
-    function model()
+    public function model()
     {
         return "Lavalite\\User\\Models\\Role";
     }
@@ -23,16 +23,17 @@ class RoleRepository extends BaseRepository implements RoleRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function users($role = NULL, $columns = array('*'))
+    public function users($role = null, $columns = ['*'])
     {
         $results = $this->model->with('users')->where('name', $role)->first($columns);
 
         $this->resetModel();
 
-        if (isset($results->users))
+        if (isset($results->users)) {
             return $results->users;
+        }
 
-        return array();
+        return [];
     }
 
     /**
@@ -52,5 +53,4 @@ class RoleRepository extends BaseRepository implements RoleRepositoryInterface
         }
         return $role = $this->model->create(['name' => $roleName]);
     }
-
 }

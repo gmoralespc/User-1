@@ -4,7 +4,6 @@ namespace Lavalite\Page\Providers;
 
 use Lavalite\Page\Models\Page;
 use Lavalite\User\Models\User;
-
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -28,6 +27,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(GateContract $gate)
     {
         parent::registerPolicies($gate);
-
     }
 }

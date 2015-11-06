@@ -9,7 +9,6 @@ use Illuminate\Container\Container as Application;
  */
 interface BaseRepositoryInterface
 {
-
     /**
      * @param Application $app
      */
@@ -21,7 +20,7 @@ interface BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function all($columns = array('*'));
+    public function all($columns = ['*']);
 
     /**
      * Retrieve all data of repository
@@ -29,7 +28,7 @@ interface BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function json($columns = array('*'));
+    public function json($columns = ['*']);
 
     /**
      * Retrieve all data of repository, paginated
@@ -37,7 +36,7 @@ interface BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function paginate($limit = null, $columns = array('*'));
+    public function paginate($limit = null, $columns = ['*']);
 
     /**
      * Find data by id
@@ -46,7 +45,7 @@ interface BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function find($id, $columns = array('*'));
+    public function find($id, $columns = ['*']);
 
     /**
      * Find data by id and return new instance if not found
@@ -55,7 +54,7 @@ interface BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function findOrNew($id, $columns = array('*'));
+    public function findOrNew($id, $columns = ['*']);
 
     /**
      * Find data by field and value
@@ -65,7 +64,7 @@ interface BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function findByField($field, $value, $columns = array('*'));
+    public function findByField($field, $value, $columns = ['*']);
 
     /**
      * Find data by multiple fields
@@ -74,7 +73,7 @@ interface BaseRepositoryInterface
      * @param array $columns
      * @return mixed
      */
-    public function findWhere( array $where , $columns = array('*'));
+    public function findWhere(array $where, $columns = ['*']);
 
     /**
      * Save a new entity in repository
@@ -132,5 +131,4 @@ interface BaseRepositoryInterface
      * @return $this
      */
     public function scopeQuery(\Closure $scope);
-
 }

@@ -9,6 +9,8 @@ class User extends Facade
      *
      * @return string
      */
-    protected static function getFacadeAccessor() { return 'user'; }
-
+    protected static function getFacadeAccessor()
+    {
+        return 'user';
+    }
 }

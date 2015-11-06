@@ -3,9 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateUsersTable extends Migration {
-
-        /**
+class CreateUsersTable extends Migration
+{
+    /**
          * Run the migrations.
          *
          * @return void
@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration {
          {        /**
              * Table: users
              */
-            Schema::create('users', function($table) {
+            Schema::create('users', function ($table) {
                 $table->increments('id')->unsigned();
                 $table->integer('reporting_to')->nullable()->default(0);
                 $table->string('name', 100)->nullable();
@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration {
                 $table->string('password', 100);
                 $table->boolean('active')->nullable();
                 $table->string('remember_token', 255)->nullable();
-                $table->enum('sex', array('', 'male','female'))->nullable();
+                $table->enum('sex', ['', 'male','female'])->nullable();
                 $table->date('dob')->nullable();
                 $table->string('designation', 50)->nullable();
                 $table->string('mobile', 100)->nullable();
@@ -39,7 +39,7 @@ class CreateUsersTable extends Migration {
                 $table->softDeletes();
                 $table->nullableTimestamps();
             });
-        }
+         }
 
         /**
          * Reverse the migrations.
@@ -48,8 +48,6 @@ class CreateUsersTable extends Migration {
          */
          public function down()
          {
-
-                Schema::drop('users');
+             Schema::drop('users');
          }
-
 }

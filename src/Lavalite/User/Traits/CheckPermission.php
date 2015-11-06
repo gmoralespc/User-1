@@ -123,7 +123,7 @@ trait CheckPermission
 
         $permissions    = [];
 
-        foreach($roles as $role){
+        foreach ($roles as $role) {
             $permissions = array_merge($permissions, $role->permissions);
         }
 

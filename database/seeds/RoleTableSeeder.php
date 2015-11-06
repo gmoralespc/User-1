@@ -4,41 +4,40 @@ use Illuminate\Database\Eloquent\Model;
 
 class RoleTableSeeder extends Seeder
 {
-
     public function run()
     {
-        DB::table('permissions')->insert(array(
-            array(
-                'name' => 'user.role.view',
-                'readable_name' => 'View Role'
-            ),
-            array(
-                'name' => 'user.role.create',
-                'readable_name' => 'Create Role'
-            ),
-            array(
-                'name' => 'user.role.edit',
-                'readable_name' => 'Update Role'
-            ),
-            array(
-                'name' => 'user.role.delete',
-                'readable_name' => 'Delete Role'
-            )
-        ));
-
-        DB::table('roles')->insert(array(
+        DB::table('permissions')->insert([
             [
-                'id' => 1,
+                'name'          => 'user.role.view',
+                'readable_name' => 'View Role'
+            ],
+            [
+                'name'          => 'user.role.create',
+                'readable_name' => 'Create Role'
+            ],
+            [
+                'name'          => 'user.role.edit',
+                'readable_name' => 'Update Role'
+            ],
+            [
+                'name'          => 'user.role.delete',
+                'readable_name' => 'Delete Role'
+            ]
+        ]);
+
+        DB::table('roles')->insert([
+            [
+                'id'   => 1,
                 'name' => 'superuser'
             ],
             [
-                'id' => 2,
+                'id'   => 2,
                 'name' => 'admin'
             ],
             [
-                'id' => 3,
+                'id'   => 3,
                 'name' => 'user'
             ],
-        ));
+        ]);
     }
 }
